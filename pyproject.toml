@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=64"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -8,7 +8,8 @@ dynamic = ["version"]
 description = "RADAR: deep-learning decomposition of Raman spectra into baseline, cosmic rays, noise and peaks"
 readme = "README.md"
 requires-python = ">=3.9"
-license = { file = "LICENSE" }
+license = "BSD-3-Clause"
+license-files = ["LICENSE", "AUTHORS.md"]
 authors = [
     { name = "Joel Sjöberg", email = "joelsjoberg3@gmail.com" },
     { name = "Bogdan Oancea", email = "bogdan.oancea@gmail.com" },
@@ -18,7 +19,6 @@ keywords = ["Raman spectroscopy", "deep learning", "baseline correction",
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: BSD License",
     "Programming Language :: Python :: 3",
     "Topic :: Scientific/Engineering :: Chemistry",
     "Topic :: Scientific/Engineering :: Physics",
@@ -48,6 +48,10 @@ dev = ["radar-raman[plot,formats,renishaw,test,docs]"]
 radar = "radar.cli:main"
 
 [project.urls]
+Homepage = "https://github.com/bogdanoancea/RADAR"
+Documentation = "https://github.com/bogdanoancea/RADAR/blob/main/docs/user_guide.md"
+Issues = "https://github.com/bogdanoancea/RADAR/issues"
+Changelog = "https://github.com/bogdanoancea/RADAR/blob/main/CHANGELOG.md"
 "Original code" = "https://github.com/JoelSjoberg/Comprehensive-Raman-Spectral-Analysis-Using-Deep-Learning"
 
 [tool.setuptools.dynamic]
