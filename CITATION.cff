@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+message: "If you use RADAR, please cite the paper below."
+title: "RADAR: Raman spectral Analysis using Deep learning for Artifact Removal (Python package)"
+version: 0.1.0
+license: BSD-3-Clause
+authors:
+  - family-names: Sjöberg
+    given-names: Joel
+  - family-names: Oancea
+    given-names: Bogdan
+repository-code: "https://github.com/JoelSjoberg/Comprehensive-Raman-Spectral-Analysis-Using-Deep-Learning"
+preferred-citation:
+  type: article
+  title: "RADAR: Raman Spectral Analysis Using Deep Learning for Artifact Removal"
+  authors:
+    - family-names: Sjöberg
+      given-names: Joel
+    - family-names: Siminea
+      given-names: Nicoleta
+    - family-names: Păun
+      given-names: Andrei
+    - family-names: Lita
+      given-names: Adrian
+    - family-names: Larion
+      given-names: Mioara
+    - family-names: Petre
+      given-names: Ion
+  journal: "Advanced Optical Materials"
+  year: 2025
+  start: 2500736
+  doi: "10.1002/adom.202500736"

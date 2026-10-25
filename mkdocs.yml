@@ -1,0 +1,28 @@
+site_name: RADAR
+site_description: Deep-learning decomposition of Raman spectra into baseline, cosmic rays, noise and peaks
+theme:
+  name: material
+nav:
+  - Home: index.md
+  - User guide: user_guide.md
+  - Models: models.md
+  - Synthetic data: data_generation.md
+  - Command line: cli.md
+  - API reference: api.md
+  - Differences from the original code: differences.md
+  - Changelog: changelog.md
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          options:
+            docstring_style: numpy
+            show_source: false
+            members_order: source
+markdown_extensions:
+  - tables
+  - admonition
+  - toc:
+      permalink: true

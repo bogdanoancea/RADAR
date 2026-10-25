@@ -1,0 +1,65 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "radar-raman"
+dynamic = ["version"]
+description = "RADAR: deep-learning decomposition of Raman spectra into baseline, cosmic rays, noise and peaks"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Joel Sjöberg", email = "joelsjoberg3@gmail.com" },
+    { name = "Bogdan Oancea", email = "bogdan.oancea@gmail.com" },
+]
+keywords = ["Raman spectroscopy", "deep learning", "baseline correction",
+            "cosmic ray removal", "denoising", "CNN"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Chemistry",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "numpy>=1.23",
+    "scipy>=1.9",
+    "h5py>=3.7",
+    "tensorflow>=2.16",   # Keras 3
+    "keras>=3.0",
+]
+
+[project.optional-dependencies]
+plot = ["matplotlib>=3.5"]
+# Excel, Parquet and Feather files
+formats = ["pandas>=1.5", "pyarrow>=10", "openpyxl>=3.0"]
+# Renishaw .wdf (MIT licence)
+renishaw = ["renishawWiRE>=0.1.16"]
+# Horiba LabSpec .xml and TriVista .tvf; NOTE: rosettasciio is GPL-3.0 licensed
+vendor-gpl = ["rosettasciio>=0.6"]
+test = ["pytest>=7", "matplotlib>=3.5"]
+docs = ["mkdocs>=1.5,<2", "mkdocs-material>=9", "mkdocstrings[python]>=0.24"]
+dev = ["radar-raman[plot,formats,renishaw,test,docs]"]
+
+[project.scripts]
+radar = "radar.cli:main"
+
+[project.urls]
+"Original code" = "https://github.com/JoelSjoberg/Comprehensive-Raman-Spectral-Analysis-Using-Deep-Learning"
+
+[tool.setuptools.dynamic]
+version = { attr = "radar._version.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+radar = ["weights/*.h5"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["slow: tests that train a network (deselect with -m 'not slow')"]
+filterwarnings = ["ignore::DeprecationWarning"]
