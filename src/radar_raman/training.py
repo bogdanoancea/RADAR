@@ -77,7 +77,7 @@ def fit(
 ) -> keras.callbacks.History:
     """Fit a compiled RADAR model.
 
-    See :meth:`radar.Decomposer.train` for the meaning of the arguments.
+    See :meth:`radar_raman.Decomposer.train` for the meaning of the arguments.
     """
     if validation_data == "synthetic":
         validation_data = generate_dataset(

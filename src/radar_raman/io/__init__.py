@@ -4,8 +4,8 @@
 """Reading and writing spectra, decompositions and data sets in many formats.
 
 Use :func:`read` to load spectra from any supported file and :func:`write` to
-save spectra, a :class:`~radar.Components` decomposition or a
-:class:`~radar.generator.SyntheticDataset`. The format is chosen from the file
+save spectra, a :class:`~radar_raman.Components` decomposition or a
+:class:`~radar_raman.generator.SyntheticDataset`. The format is chosen from the file
 extension (or ``format=``). :func:`formats` lists what is available.
 
 See the user guide for the full table of formats.
@@ -306,7 +306,7 @@ def _detect(path: Path, fmt: Optional[str]) -> Format:
         for f in FORMATS:
             if f".{key}" in f.extensions:
                 return f
-        raise ValueError(f"unknown format {fmt!r}; see radar.io.formats()")
+        raise ValueError(f"unknown format {fmt!r}; see radar_raman.io.formats()")
     name = path.name.lower()
     if name.endswith(".xml"):
         return _BY_NAME["labspec"]
@@ -314,7 +314,7 @@ def _detect(path: Path, fmt: Optional[str]) -> Format:
         if any(name.endswith(ext) for ext in f.extensions):
             return f
     raise ValueError(f"cannot tell the format of {path.name!r} from its extension; pass format=... "
-                     "(see radar.io.formats())")
+                     "(see radar_raman.io.formats())")
 
 
 def formats(show: bool = False) -> List[dict]:
@@ -475,7 +475,7 @@ def save_spectra(path, spectra, wavenumbers=None, names: Optional[Sequence[str]]
 
 
 def save_components(components, path, **options):
-    """Write a :class:`~radar.Components` decomposition (see :func:`write`)."""
+    """Write a :class:`~radar_raman.Components` decomposition (see :func:`write`)."""
     return write(components, path, **options)
 
 
@@ -516,7 +516,7 @@ def load_components(path, format: Optional[str] = None, **options):
 
 
 def save_dataset(dataset, path, **options):
-    """Write a :class:`~radar.generator.SyntheticDataset` (any multi-array format)."""
+    """Write a :class:`~radar_raman.generator.SyntheticDataset` (any multi-array format)."""
     path = Path(path)
     if path.suffix == "":
         path = path.with_suffix(".npz")

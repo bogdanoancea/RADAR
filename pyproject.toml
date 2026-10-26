@@ -45,7 +45,7 @@ docs = ["mkdocs>=1.5,<2", "mkdocs-material>=9", "mkdocstrings[python]>=0.24"]
 dev = ["radar-raman[plot,formats,renishaw,test,docs]"]
 
 [project.scripts]
-radar = "radar.cli:main"
+radar-raman = "radar_raman.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/bogdanoancea/RADAR"
@@ -55,13 +55,13 @@ Changelog = "https://github.com/bogdanoancea/RADAR/blob/main/CHANGELOG.md"
 "Original code" = "https://github.com/JoelSjoberg/Comprehensive-Raman-Spectral-Analysis-Using-Deep-Learning"
 
 [tool.setuptools.dynamic]
-version = { attr = "radar._version.__version__" }
+version = { attr = "radar_raman._version.__version__" }
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.setuptools.package-data]
-radar = ["weights/*.h5"]
+radar_raman = ["weights/*.h5"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

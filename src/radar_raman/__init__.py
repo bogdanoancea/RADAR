@@ -10,22 +10,21 @@ neural networks::
 
 The whole API in eight functions::
 
-    import radar
+    import radar_raman
+    comps = radar_raman.decompose("map.wdf")            # file or array -> Components
+    comps = radar_raman.decompose(X, model="standard", output="result.h5")
 
-    comps = radar.decompose("map.wdf")                  # file or array -> Components
-    comps = radar.decompose(X, model="standard", output="result.h5")
+    data  = radar_raman.read("spectra.spc")             # any supported format
+    radar_raman.write(comps, "result.parquet")          # spectra / components / data sets
 
-    data  = radar.read("spectra.spc")                   # any supported format
-    radar.write(comps, "result.parquet")                # spectra / components / data sets
+    model = radar_raman.load_model("ensemble")          # pre-trained, or a saved file
+    model = radar_raman.train(epochs=12, save_to="my.keras")  # new or fine-tuned network
 
-    model = radar.load_model("ensemble")                # pre-trained, or a saved file
-    model = radar.train(epochs=12, save_to="my.keras")  # new or fine-tuned network
+    test  = radar_raman.generate(1000)                  # synthetic spectra with ground truth
+    radar_raman.evaluate(model, test)                   # RMSE, MAE, max error, R^2
 
-    test  = radar.generate(1000)                        # synthetic spectra with ground truth
-    radar.evaluate(model, test)                         # RMSE, MAE, max error, R^2
-
-``radar.formats(show=True)`` lists the supported file formats;
-``radar.model_info("my.keras", show=True)`` shows which software versions a
+``radar_raman.formats(show=True)`` lists the supported file formats;
+``radar_raman.model_info("my.keras", show=True)`` shows which software versions a
 saved model was made with.
 
 The networks, the synthetic training data generator and the pre-trained

@@ -10,8 +10,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-import radar
-
+import radar_raman
 DATA_DIR = Path(__file__).parent / "data"
 
 
@@ -29,9 +28,9 @@ def reference():
 
 @pytest.fixture(scope="session")
 def pretrained():
-    return {a: radar.load_pretrained(a) for a in ("standard", "ensemble")}
+    return {a: radar_raman.load_pretrained(a) for a in ("standard", "ensemble")}
 
 
 @pytest.fixture(scope="session")
 def small_dataset():
-    return radar.generate_dataset(16, length=512, seed=123)
+    return radar_raman.generate_dataset(16, length=512, seed=123)

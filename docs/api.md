@@ -4,22 +4,22 @@
 
 | Function | Description |
 |---|---|
-| `radar.decompose(spectra, model="ensemble", output=None, **kw)` | decompose an array, `SpectralData` or file → `Components` (or a list for spectra of different lengths); `output=` saves the result |
-| `radar.read(path, format=None, **options)` | read spectra from any supported file → `SpectralData` |
-| `radar.write(obj, path, format=None, wavenumbers=None, names=None, **options)` | write spectra, `Components` or `SyntheticDataset` → path (or list of paths) |
-| `radar.formats(show=False)` | supported formats (list of dicts; prints a table with `show=True`) |
-| `radar.load_model(model="ensemble", architecture=None)` | pre-trained model by name, or a saved `.keras` / `.weights.h5` / Keras 2 `.h5` file → `Decomposer` |
-| `radar.train(data=None, *, model="ensemble", init=None, save_to=None, **train_options)` | train a new network or fine-tune one → `Decomposer` |
-| `radar.generate(n, length=1024, ...)` | synthetic spectra with known components → `SyntheticDataset` (alias of `generate_dataset`) |
-| `radar.evaluate(model, dataset, statistics=False)` | per-component metrics; `dataset` may be a file |
+| `radar_raman.decompose(spectra, model="ensemble", output=None, **kw)` | decompose an array, `SpectralData` or file → `Components` (or a list for spectra of different lengths); `output=` saves the result |
+| `radar_raman.read(path, format=None, **options)` | read spectra from any supported file → `SpectralData` |
+| `radar_raman.write(obj, path, format=None, wavenumbers=None, names=None, **options)` | write spectra, `Components` or `SyntheticDataset` → path (or list of paths) |
+| `radar_raman.formats(show=False)` | supported formats (list of dicts; prints a table with `show=True`) |
+| `radar_raman.load_model(model="ensemble", architecture=None)` | pre-trained model by name, or a saved `.keras` / `.weights.h5` / Keras 2 `.h5` file → `Decomposer` |
+| `radar_raman.train(data=None, *, model="ensemble", init=None, save_to=None, **train_options)` | train a new network or fine-tune one → `Decomposer` |
+| `radar_raman.generate(n, length=1024, ...)` | synthetic spectra with known components → `SyntheticDataset` (alias of `generate_dataset`) |
+| `radar_raman.evaluate(model, dataset, statistics=False)` | per-component metrics; `dataset` may be a file |
 
-Also available: `radar.model_info(model, show=False)` (software versions,
+Also available: `radar_raman.model_info(model, show=False)` (software versions,
 architecture and training settings recorded in a saved model),
-`radar.load_pretrained(architecture)`,
-`radar.new_model(architecture, **hyper)`, `radar.load_components(path)`,
-`radar.save_components(c, path)`, `radar.load_dataset(path)`,
-`radar.save_dataset(ds, path)`, `radar.read_spectra` (alias of `read`) and
-`radar.save_spectra(path, X, wavenumbers, names)`.
+`radar_raman.load_pretrained(architecture)`,
+`radar_raman.new_model(architecture, **hyper)`, `radar_raman.load_components(path)`,
+`radar_raman.save_components(c, path)`, `radar_raman.load_dataset(path)`,
+`radar_raman.save_dataset(ds, path)`, `radar_raman.read_spectra` (alias of `read`) and
+`radar_raman.save_spectra(path, X, wavenumbers, names)`.
 
 ## Classes
 
@@ -66,37 +66,37 @@ architecture and training settings recorded in a saved model),
 
 | Module | Contents |
 |---|---|
-| `radar.models` | `build_model`, `build_standard_model`, `build_ensemble_model`, `compile_model`, `COMPONENTS`, `ARCHITECTURES`, `LEGACY_LAYER_NAMES` |
-| `radar.layers` | `EdgePad1D` (alias `CustomPad`), `ExpandLastDim`, `ResidualSubtract` |
-| `radar.losses` | `root_mean_squared_error`, `r_square`, `r_square_loss`, `joined_loss` |
-| `radar.generator` | `generate_dataset`, `train_test_datasets`, `generate_sample`, `generate_spectrum`, `batch_generator`, `make_tf_dataset`, `make_baselines`, `generate_baseline`, `generate_peaks`, `get_random_peak`, `generate_cosmic_rays`, `generate_noise` |
-| `radar.io` | `read`, `write`, `formats`, `SpectralData`, `Record`, `load_components`, `save_components`, `load_dataset`, `save_dataset` |
-| `radar.metrics` | `rmse`, `mae`, `max_error`, `r2` (per spectrum), `per_spectrum_errors`, `error_statistics`, `evaluate_components`, `snr` |
-| `radar.training` | `original_learning_rate_schedule`, `ORIGINAL_LR_VALUES`, `fit` |
-| `radar.preprocessing` | `minmax_normalize`, `denormalize_components`, `Scaling` |
-| `radar.plotting` | `plot_components`, `plot_comparison` |
-| `radar.cli` | `main`, `build_parser` |
+| `radar_raman.models` | `build_model`, `build_standard_model`, `build_ensemble_model`, `compile_model`, `COMPONENTS`, `ARCHITECTURES`, `LEGACY_LAYER_NAMES` |
+| `radar_raman.layers` | `EdgePad1D` (alias `CustomPad`), `ExpandLastDim`, `ResidualSubtract` |
+| `radar_raman.losses` | `root_mean_squared_error`, `r_square`, `r_square_loss`, `joined_loss` |
+| `radar_raman.generator` | `generate_dataset`, `train_test_datasets`, `generate_sample`, `generate_spectrum`, `batch_generator`, `make_tf_dataset`, `make_baselines`, `generate_baseline`, `generate_peaks`, `get_random_peak`, `generate_cosmic_rays`, `generate_noise` |
+| `radar_raman.io` | `read`, `write`, `formats`, `SpectralData`, `Record`, `load_components`, `save_components`, `load_dataset`, `save_dataset` |
+| `radar_raman.metrics` | `rmse`, `mae`, `max_error`, `r2` (per spectrum), `per_spectrum_errors`, `error_statistics`, `evaluate_components`, `snr` |
+| `radar_raman.training` | `original_learning_rate_schedule`, `ORIGINAL_LR_VALUES`, `fit` |
+| `radar_raman.preprocessing` | `minmax_normalize`, `denormalize_components`, `Scaling` |
+| `radar_raman.plotting` | `plot_components`, `plot_comparison` |
+| `radar_raman.cli` | `main`, `build_parser` |
 
 ---
 
 ## Docstrings
 
-::: radar.decomposer
+::: radar_raman.decomposer
 
-::: radar.components
+::: radar_raman.components
 
-::: radar.io
+::: radar_raman.io
 
-::: radar.models
+::: radar_raman.models
 
-::: radar.generator
+::: radar_raman.generator
 
-::: radar.metrics
+::: radar_raman.metrics
 
-::: radar.training
+::: radar_raman.training
 
-::: radar.preprocessing
+::: radar_raman.preprocessing
 
-::: radar.layers
+::: radar_raman.layers
 
-::: radar.plotting
+::: radar_raman.plotting

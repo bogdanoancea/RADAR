@@ -4,10 +4,10 @@
 import numpy as np
 import pytest
 
-import radar
-from radar import cli, metrics
-from radar.preprocessing import denormalize_components, minmax_normalize
-from radar.training import ORIGINAL_LR_VALUES, original_learning_rate_schedule
+import radar_raman
+from radar_raman import cli, metrics
+from radar_raman.preprocessing import denormalize_components, minmax_normalize
+from radar_raman.training import ORIGINAL_LR_VALUES, original_learning_rate_schedule
 
 
 def test_minmax_and_inverse():
@@ -42,7 +42,7 @@ def test_schedule_matches_original():
 
 
 def test_citation():
-    assert "10.1002/adom.202500736" in radar.citation()
+    assert "10.1002/adom.202500736" in radar_raman.citation()
 
 
 def test_plotting(pretrained, small_dataset):
@@ -50,7 +50,7 @@ def test_plotting(pretrained, small_dataset):
     import matplotlib
 
     matplotlib.use("Agg")
-    from radar.plotting import plot_comparison
+    from radar_raman.plotting import plot_comparison
 
     c = pretrained["ensemble"].decompose(small_dataset.X[:2], units="normalized")
     assert len(c.plot(index=1).axes) == 5
@@ -61,11 +61,11 @@ def test_cli_generate_decompose_evaluate(tmp_path, capsys):
     ds_path = tmp_path / "ds.npz"
     cli.main(["generate", "-n", "4", "--length", "128", "-o", str(ds_path)])
     assert ds_path.exists()
-    X = radar.SyntheticDataset.load(ds_path).X
-    inp = radar.save_spectra(tmp_path / "in.csv", X, wavenumbers=np.linspace(400, 1600, 128))
+    X = radar_raman.SyntheticDataset.load(ds_path).X
+    inp = radar_raman.save_spectra(tmp_path / "in.csv", X, wavenumbers=np.linspace(400, 1600, 128))
     out = tmp_path / "out.h5"
     cli.main(["decompose", str(inp), "-o", str(out), "-m", "standard"])
-    c = radar.load_components(out)
+    c = radar_raman.load_components(out)
     assert c.spectra.shape == (4, 128) and c.wavenumbers is not None
     cli.main(["evaluate", str(ds_path), "-m", "ensemble"])
     assert '"peaks"' in capsys.readouterr().out
@@ -77,7 +77,7 @@ def test_cli_train(tmp_path):
     out = tmp_path / "m.keras"
     cli.main(["train", "-o", str(out), "--epochs", "1", "--steps", "2", "--batch-size", "4",
               "--length", "128", "--validation-size", "0", "--verbose", "0"])
-    m = radar.load_model(out)
+    m = radar_raman.load_model(out)
     assert m.architecture == "ensemble"
 
 
@@ -89,10 +89,10 @@ def test_max_error_matches_sklearn_definition():
 
 
 def test_error_statistics_and_evaluate(small_dataset):
-    truth = {c: getattr(small_dataset, c) for c in radar.COMPONENTS}
+    truth = {c: getattr(small_dataset, c) for c in radar_raman.COMPONENTS}
     pred = {c: v + 0.1 for c, v in truth.items()}
     stats = metrics.error_statistics(truth, pred)
-    for c in radar.COMPONENTS:
+    for c in radar_raman.COMPONENTS:
         assert np.isclose(stats[c]["max_error_mean"], 0.1)
         assert np.isclose(stats[c]["rmse_median"], 0.1)
         assert np.isclose(stats[c]["max_error_variance"], 0.0, atol=1e-12)
@@ -103,21 +103,21 @@ def test_error_statistics_and_evaluate(small_dataset):
 
 
 def test_simple_api(tmp_path):
-    test = radar.generate(8, length=128, seed=0)
-    assert isinstance(test, radar.SyntheticDataset)
-    m = radar.load_model("standard")
-    assert m.architecture == "standard" and radar.load_model(m) is m
-    res = radar.evaluate("standard", test)
+    test = radar_raman.generate(8, length=128, seed=0)
+    assert isinstance(test, radar_raman.SyntheticDataset)
+    m = radar_raman.load_model("standard")
+    assert m.architecture == "standard" and radar_raman.load_model(m) is m
+    res = radar_raman.evaluate("standard", test)
     assert set(res["peaks"]) == {"rmse", "mae", "max_error", "r2"}
-    stats = radar.evaluate(m, test.save(tmp_path / "t.h5"), statistics=True)
+    stats = radar_raman.evaluate(m, test.save(tmp_path / "t.h5"), statistics=True)
     assert "max_error_median" in stats["noise"]
-    c = radar.decompose(test.X, model=m, output=tmp_path / "c.parquet")
-    np.testing.assert_allclose(radar.load_components(tmp_path / "c.parquet").peaks, c.peaks)
+    c = radar_raman.decompose(test.X, model=m, output=tmp_path / "c.parquet")
+    np.testing.assert_allclose(radar_raman.load_components(tmp_path / "c.parquet").peaks, c.peaks)
 
 
 @pytest.mark.slow
 def test_simple_train(tmp_path):
-    m = radar.train(model="standard", init="pretrained", save_to=tmp_path / "m.keras", epochs=1,
+    m = radar_raman.train(model="standard", init="pretrained", save_to=tmp_path / "m.keras", epochs=1,
                     steps_per_epoch=1, batch_size=4, length=64, learning_rate=1e-6,
                     validation_data=None, verbose=0)
     assert (tmp_path / "m.keras").exists() and m.history is not None
@@ -125,9 +125,9 @@ def test_simple_train(tmp_path):
 
 def test_cli_convert_and_formats(tmp_path, capsys):
     X = np.random.default_rng(0).random((2, 40))
-    src = radar.write(X, tmp_path / "a.csv", wavenumbers=np.linspace(100, 500, 40))
+    src = radar_raman.write(X, tmp_path / "a.csv", wavenumbers=np.linspace(100, 500, 40))
     cli.main(["convert", str(src), str(tmp_path / "a.spc")])
-    np.testing.assert_allclose(radar.read(tmp_path / "a.spc").intensities, X, rtol=1e-5)
+    np.testing.assert_allclose(radar_raman.read(tmp_path / "a.spc").intensities, X, rtol=1e-5)
     cli.main(["decompose", str(src), str(tmp_path / "a.spc"), "-o", str(tmp_path / "{stem}_out.db"),
               "-m", "standard"])
     assert (tmp_path / "a_out.db").exists()

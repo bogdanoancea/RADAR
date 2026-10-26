@@ -5,9 +5,8 @@
 
 Typical use::
 
-    import radar
-
-    model = radar.load_pretrained("ensemble")   # or radar.load_model("my.keras")
+    import radar_raman
+    model = radar_raman.load_pretrained("ensemble")  # or radar_raman.load_model("my.keras")
     comps = model.decompose(spectra)            # spectra: (n, length) or (length,)
     comps.baseline, comps.cosmic_rays, comps.noise, comps.peaks
 """
@@ -46,8 +45,8 @@ class Decomposer:
     """A RADAR network wrapped with pre/post-processing, training and I/O.
 
     Create one with :meth:`pretrained`, :meth:`new` or :meth:`load` (or the
-    module-level shortcuts :func:`radar.load_pretrained` and
-    :func:`radar.load_model`).
+    module-level shortcuts :func:`radar_raman.load_pretrained` and
+    :func:`radar_raman.load_model`).
 
     Parameters
     ----------
@@ -90,7 +89,7 @@ class Decomposer:
             Initial optimiser setting (``train`` re-compiles anyway).
         **build_kwargs
             Hyper-parameters passed to the builder, e.g. ``scaler``,
-            ``dim_red_size``, ``seed`` (see :mod:`radar.models`).
+            ``dim_red_size``, ``seed`` (see :mod:`radar_raman.models`).
         """
         model = build_model(architecture, **build_kwargs)
         compile_model(model, architecture, learning_rate)
@@ -141,7 +140,7 @@ class Decomposer:
         optimiser state is not restored in that case (a warning is issued).
 
         Files saved by RADAR record the software versions they were saved
-        with (see :func:`radar.model_info`); a warning names the versions to
+        with (see :func:`radar_raman.model_info`); a warning names the versions to
         install when the file comes from newer software than the installed one.
         """
         from . import _provenance
@@ -163,7 +162,7 @@ class Decomposer:
     @classmethod
     def _load_file(cls, path: Path, architecture, compile, info) -> "Decomposer":
         if path.suffix == ".keras":
-            # importing radar registers the custom layers/losses
+            # importing radar_raman registers the custom layers/losses
             try:
                 with warnings.catch_warnings():
                     # an optimizer that was never used has no state to restore
@@ -236,13 +235,13 @@ class Decomposer:
         """Save the model.
 
         * ``*.keras`` -- complete model (recommended); reload with
-          :meth:`load` / :func:`radar.load_model` without extra arguments.
+          :meth:`load` / :func:`radar_raman.load_model` without extra arguments.
         * ``*.weights.h5`` -- weights only; reload with
-          :func:`radar.load_model` (the architecture is stored in the file).
+          :func:`radar_raman.load_model` (the architecture is stored in the file).
 
         Both files also record the RADAR, Keras, TensorFlow, Python and NumPy
         versions, the architecture, its hyper-parameters and the training
-        settings (see :func:`radar.model_info`).
+        settings (see :func:`radar_raman.model_info`).
         """
         from . import _provenance
 
@@ -324,9 +323,9 @@ class Decomposer:
             * 2-D array ``(n, length)`` -- ``n`` spectra of equal length;
             * 3-D array ``(ny, nx, length)`` -- a map (``map_shape`` is kept);
             * list of 1-D arrays -- spectra of possibly different lengths;
-            * :class:`radar.io.SpectralData` (from :func:`radar.read`), whose
+            * :class:`radar_raman.io.SpectralData` (from :func:`radar_raman.read`), whose
               wavenumbers, names, positions and map shape are carried over;
-            * a file path in any format readable by :func:`radar.read`
+            * a file path in any format readable by :func:`radar_raman.read`
               (``read_options`` are passed to it).
         wavenumbers : ndarray, optional
             Spectral axis, stored in the result (not used by the network).
@@ -344,7 +343,7 @@ class Decomposer:
             Print batch progress if non-zero.
         output : str or Path, optional
             Also save the result to this file (any format writable by
-            :func:`radar.write`).
+            :func:`radar_raman.write`).
 
         Returns
         -------
@@ -380,7 +379,7 @@ class Decomposer:
         elif read_options:
             raise TypeError(f"unexpected arguments {sorted(read_options)}")
 
-        # SpectralData from radar.io
+        # SpectralData from radar_raman.io
         if hasattr(spectra, "intensities"):
             if wavenumbers is None:
                 wavenumbers = getattr(spectra, "wavenumbers", None)
@@ -503,7 +502,7 @@ class Decomposer:
             ``None`` (default): train on an endless stream of freshly
             generated synthetic spectra, ``steps_per_epoch`` batches per epoch.
             Otherwise a fixed data set: a
-            :class:`~radar.generator.SyntheticDataset` or a tuple ``(X, y)``
+            :class:`~radar_raman.generator.SyntheticDataset` or a tuple ``(X, y)``
             with ``X`` of shape ``(n, length)`` and ``y`` a list
             ``[baseline, cosmic_rays, noise, peaks]`` (or a dict with these
             keys) of arrays ``(n, length)``; ``steps_per_epoch`` is then ignored.
@@ -514,12 +513,12 @@ class Decomposer:
             ``"original"``: the 12-level piecewise-constant decay used to train
             the pre-trained models, stretched to ``epochs * steps_per_epoch``
             steps (see
-            :func:`radar.training.original_learning_rate_schedule`); it starts at
+            :func:`radar_raman.training.original_learning_rate_schedule`); it starts at
             1.05e-3, so for *fine-tuning* a pre-trained model pass a small
             constant such as ``1e-5`` instead.
         length, min_width, max_width, max_num_peaks, increase_noise, legacy_scaling
             Settings of the synthetic training spectra (used when
-            ``data is None``); see :func:`radar.generator.generate_sample`.
+            ``data is None``); see :func:`radar_raman.generator.generate_sample`.
         validation_data : "synthetic", None, SyntheticDataset or (X, y)
             ``"synthetic"`` generates ``validation_size`` spectra of
             ``validation_length`` points as in the original training scripts.
@@ -601,7 +600,7 @@ class Decomposer:
         Parameters
         ----------
         dataset : SyntheticDataset
-            E.g. from :func:`radar.generate_dataset`.
+            E.g. from :func:`radar_raman.generate_dataset`.
         normalize : bool
             Whether to min-max normalise the inputs first. Synthetic data are
             already in the network's scale, so the default is ``False``.
@@ -613,10 +612,10 @@ class Decomposer:
         -------
         dict
             ``{component: {"rmse", "mae", "max_error", "r2"}}`` (see
-            :func:`radar.metrics.evaluate_components`), or with
+            :func:`radar_raman.metrics.evaluate_components`), or with
             ``statistics=True`` ``{component: {"rmse_mean", "rmse_median",
             "rmse_variance", "max_error_mean", "max_error_median",
-            "max_error_variance"}}`` (see :func:`radar.metrics.error_statistics`).
+            "max_error_variance"}}`` (see :func:`radar_raman.metrics.error_statistics`).
         """
         from .metrics import error_statistics, evaluate_components
 
@@ -639,7 +638,7 @@ class Decomposer:
 
 
 # ----------------------------------------------------------------------
-# Module-level API (re-exported as radar.load_model, radar.decompose, ...)
+# Module-level API (re-exported as radar_raman.load_model, radar_raman.decompose, ...)
 # ----------------------------------------------------------------------
 _PRETRAINED_CACHE: dict = {}
 
@@ -706,7 +705,7 @@ def decompose(spectra, model="ensemble", output=None, **kwargs):
 
     Examples
     --------
-    >>> comps = radar.decompose("map.wdf", output="map_components.h5")   # doctest: +SKIP
+    >>> comps = radar_raman.decompose("map.wdf", output="map_components.h5")  # doctest: +SKIP
     """
     return _cached(model).decompose(spectra, output=output, **kwargs)
 
@@ -718,7 +717,7 @@ def train(data=None, *, model="ensemble", init: Optional[str] = None, save_to=No
     ----------
     data : None, SyntheticDataset, (X, y), or path
         Training data; ``None`` trains on freshly generated synthetic spectra.
-        A path is read with :func:`radar.load_dataset`.
+        A path is read with :func:`radar_raman.load_dataset`.
     model : "ensemble", "standard" or Decomposer
         Architecture of a new network, or an existing model to continue
         training.
@@ -758,7 +757,7 @@ def evaluate(model, dataset, statistics: bool = False, **kwargs) -> dict:
     """Error metrics of ``model`` on a data set with known components.
 
     ``model`` may be a name, a path or a :class:`Decomposer`; ``dataset`` a
-    :class:`~radar.generator.SyntheticDataset` or a path to one. See
+    :class:`~radar_raman.generator.SyntheticDataset` or a path to one. See
     :meth:`Decomposer.evaluate`.
     """
     if isinstance(dataset, str) or hasattr(dataset, "__fspath__"):

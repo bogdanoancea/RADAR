@@ -13,20 +13,19 @@ needs a GPU and days of compute:
     model.train(epochs=12, steps_per_epoch=200_000, batch_size=100, length=750)
 
 Command-line equivalent:
-    radar train --architecture ensemble --epochs 12 --steps 200000 -o my_model.keras
+    radar-raman train --architecture ensemble --epochs 12 --steps 200000 -o my_model.keras
 """
 import sys
 from pathlib import Path
 
-import radar
-
+import radar_raman
 OUT = Path(__file__).parent / "output"
 OUT.mkdir(exist_ok=True)
 FULL = "--full" in sys.argv
 
 # 1. A new, randomly initialised network ("ensemble" or "standard").
-#    Hyper-parameters can be changed, e.g. radar.Decomposer.new("ensemble", scaler=16).
-model = radar.Decomposer.new("ensemble")
+#    Hyper-parameters can be changed, e.g. radar_raman.Decomposer.new("ensemble", scaler=16).
+model = radar_raman.Decomposer.new("ensemble")
 print(model)
 
 # 2. Train on an endless stream of freshly generated synthetic spectra.
@@ -46,12 +45,12 @@ print("final training loss:", history.history["loss"][-1])
 
 # 3. Save / reload. '.keras' keeps architecture, weights and optimiser state.
 path = model.save(OUT / "my_model.keras")
-model2 = radar.load_model(path)
+model2 = radar_raman.load_model(path)
 print("reloaded:", model2)
 
 # 4. Evaluate on an independent synthetic test set and compare with the
 #    pre-trained model.
-test = radar.generate_dataset(200, length=1024, seed=99)
-for name, m in [("new", model2), ("pre-trained", radar.load_pretrained("ensemble"))]:
+test = radar_raman.generate_dataset(200, length=1024, seed=99)
+for name, m in [("new", model2), ("pre-trained", radar_raman.load_pretrained("ensemble"))]:
     res = m.evaluate(test)
     print(name, {k: round(v["r2"], 3) for k, v in res.items()})

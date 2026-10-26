@@ -12,11 +12,11 @@ J. Sjöberg.
   rebuilding the network and loading only its weights.
 - Saved models (`.keras`, `.weights.h5`) record the RADAR, Keras, TensorFlow,
   Python and NumPy versions, the architecture, hyper-parameters and training
-  settings; `radar.model_info()` / `radar info MODEL` show them and flag
+  settings; `radar_raman.model_info()` / `radar-raman info MODEL` show them and flag
   version mismatches.
 
 **API**
-- Simple API: `radar.decompose`, `read`, `write`, `formats`, `load_model`,
+- Simple API: `radar_raman.decompose`, `read`, `write`, `formats`, `load_model`,
   `train`, `generate`, `evaluate`.
 - `Decomposer` class: `decompose` (arrays, files, maps, spectra of different
   lengths), `train`, `evaluate`, `save`, `load`, `pretrained`.
@@ -40,6 +40,6 @@ J. Sjöberg.
   summaries of the per-spectrum RMSE and max error.
 
 **Tools and documentation**
-- `radar` command-line tool with the `decompose`, `convert`, `generate`,
+- `radar-raman` command-line tool with the `decompose`, `convert`, `generate`,
   `train`, `evaluate`, `formats` and `info` commands.
 - Tests, eight example scripts and a comprehensive user guide.

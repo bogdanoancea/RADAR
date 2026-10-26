@@ -4,8 +4,8 @@
 import numpy as np
 import pytest
 
-import radar
-from radar import generator as g
+import radar_raman
+from radar_raman import generator as g
 
 
 def test_components_ranges():
@@ -28,7 +28,7 @@ def test_sample_is_sum_of_targets(increase_noise):
     rng = np.random.default_rng(5)
     for _ in range(30):
         s, t = g.generate_sample(600, increase_noise=increase_noise, rng=rng)
-        np.testing.assert_allclose(s, sum(t[c] for c in radar.COMPONENTS), atol=1e-10)
+        np.testing.assert_allclose(s, sum(t[c] for c in radar_raman.COMPONENTS), atol=1e-10)
 
 
 def test_test_setting_is_minmax_normalised():
@@ -51,9 +51,9 @@ def test_short_spectra():
 
 
 def test_dataset_reproducible_and_shapes():
-    a = radar.generate_dataset(10, length=256, seed=7)
-    b = radar.generate_dataset(10, length=256, seed=7)
-    c = radar.generate_dataset(10, length=256, seed=8)
+    a = radar_raman.generate_dataset(10, length=256, seed=7)
+    b = radar_raman.generate_dataset(10, length=256, seed=7)
+    c = radar_raman.generate_dataset(10, length=256, seed=8)
     assert a.X.shape == (10, 256) and len(a) == 10 and a.length == 256
     np.testing.assert_array_equal(a.X, b.X)
     assert not np.array_equal(a.X, c.X)
@@ -63,19 +63,19 @@ def test_dataset_reproducible_and_shapes():
 
 
 def test_train_test_independent():
-    tr, te = radar.train_test_datasets(8, 4, length=200, seed=0)
+    tr, te = radar_raman.train_test_datasets(8, 4, length=200, seed=0)
     assert len(tr) == 8 and len(te) == 4
     assert tr.params["increase_noise"] is False and te.params["increase_noise"] is True
 
 
 def test_batch_generator():
-    gen = radar.batch_generator(length=128, batch_size=4, seed=0)
+    gen = radar_raman.batch_generator(length=128, batch_size=4, seed=0)
     X, y = next(gen)
     assert X.shape == (4, 128, 1) and X.dtype == np.float32
     assert len(y) == 4 and all(t.shape == (4, 128) for t in y)
 
 
 def test_tf_dataset():
-    ds = radar.make_tf_dataset(length=64, batch_size=2, seed=0)
+    ds = radar_raman.make_tf_dataset(length=64, batch_size=2, seed=0)
     X, y = next(iter(ds))
     assert tuple(X.shape) == (2, 64, 1) and len(y) == 4

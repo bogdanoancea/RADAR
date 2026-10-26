@@ -5,7 +5,7 @@ import keras
 import numpy as np
 import pytest
 
-from radar.layers import EdgePad1D, ExpandLastDim, ResidualSubtract
+from radar_raman.layers import EdgePad1D, ExpandLastDim, ResidualSubtract
 
 
 @pytest.mark.parametrize("size", [1, 2, 3, 4, 8, 33, 64, 128])

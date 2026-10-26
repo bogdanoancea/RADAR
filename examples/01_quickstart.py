@@ -9,18 +9,17 @@ from pathlib import Path
 
 import numpy as np
 
-import radar
-
+import radar_raman
 OUT = Path(__file__).parent / "output"
 OUT.mkdir(exist_ok=True)
 
 # 1. Some spectra: an array of shape (n_spectra, length) or (length,).
 #    Here: synthetic test spectra, scaled to arbitrary intensity units.
-data = radar.generate_dataset(4, length=1024, seed=0)
+data = radar_raman.generate_dataset(4, length=1024, seed=0)
 spectra = 2500 * data.X + 300
 
 # 2. Load a model: the pre-trained 'ensemble' (or 'standard') network.
-model = radar.load_pretrained("ensemble")
+model = radar_raman.load_pretrained("ensemble")
 print(model)
 
 # 3. Decompose. Spectra are min-max normalised internally and the components
@@ -51,5 +50,5 @@ except ImportError:
     print("install matplotlib to plot: pip install matplotlib")
 
 # One-liner alternative (the pre-trained model is cached between calls):
-comps2 = radar.decompose(spectra[0], model="ensemble")
+comps2 = radar_raman.decompose(spectra[0], model="ensemble")
 print("single spectrum ->", comps2)

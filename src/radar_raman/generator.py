@@ -400,7 +400,7 @@ class SyntheticDataset:
 
     def save(self, path, **options):
         """Save in any multi-array format (``.npz`` by default; also ``.h5``,
-        ``.parquet``, ``.db``, ``.csv``, ...; see :func:`radar.write`)."""
+        ``.parquet``, ``.db``, ``.csv``, ...; see :func:`radar_raman.write`)."""
         from .io import save_dataset
 
         return save_dataset(self, path, **options)

@@ -82,8 +82,8 @@ def per_spectrum_errors(truth, prediction) -> Dict[str, Dict[str, np.ndarray]]:
     ----------
     truth, prediction
         Objects with ``baseline``, ``cosmic_rays``, ``noise`` and ``peaks``
-        attributes (e.g. :class:`~radar.generator.SyntheticDataset` and
-        :class:`~radar.Components`) or dicts with those keys, in the same units.
+        attributes (e.g. :class:`~radar_raman.generator.SyntheticDataset` and
+        :class:`~radar_raman.Components`) or dicts with those keys, in the same units.
 
     Returns
     -------
@@ -129,8 +129,8 @@ def evaluate_components(truth, prediction) -> Dict[str, Dict[str, float]]:
     ----------
     truth, prediction
         Objects with ``baseline``, ``cosmic_rays``, ``noise`` and ``peaks``
-        attributes (e.g. :class:`~radar.generator.SyntheticDataset` and
-        :class:`~radar.Components`) or dicts with those keys, in the same units.
+        attributes (e.g. :class:`~radar_raman.generator.SyntheticDataset` and
+        :class:`~radar_raman.Components`) or dicts with those keys, in the same units.
 
     Returns
     -------

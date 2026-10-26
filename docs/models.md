@@ -2,7 +2,7 @@
 
 Both networks map a batch of normalised spectra `(batch, length, 1)` to four
 outputs `(batch, length)`, always in the order
-`[baseline, cosmic_rays, noise, peaks]` (`radar.COMPONENTS`). Every
+`[baseline, cosmic_rays, noise, peaks]` (`radar_raman.COMPONENTS`). Every
 convolution uses "valid" padding on an edge-padded input (`EdgePad1D`), so
 the spectrum length is preserved for any input length, and the spectrum
 edges are extended with their own values instead of zeros.
@@ -59,8 +59,8 @@ RMSE + (1 − R²).
 ## Custom hyper-parameters
 
 ```python
-radar.Decomposer.new("ensemble", scaler=16, dim_red_size=14**2, l1_param=1e-6, l2_param=1e-6, seed=1)
-keras_model = radar.build_model("standard", scaler=32)   # raw, uncompiled Keras model
+radar_raman.Decomposer.new("ensemble", scaler=16, dim_red_size=14**2, l1_param=1e-6, l2_param=1e-6, seed=1)
+keras_model = radar_raman.build_model("standard", scaler=32)  # raw, uncompiled Keras model
 ```
 
 `dim_red_size` must be a perfect square. The pre-trained weights only fit
@@ -70,8 +70,8 @@ the default hyper-parameters.
 
 | Architecture | File in package | Original file | SHA-256 |
 |---|---|---|---|
-| standard | `radar/weights/standard.h5` | `Models/standardModel.h5` | `9eecea6445d2ab0d952f6eba19a10f3a182d3262b60c77228196234dd1b326b7` |
-| ensemble | `radar/weights/ensemble.h5` | `Models/ensembleModelRes.h5` | `69e741d53dee6ab8b8de7cf515c9ea5c6a01534f4ad1f7642a8b7e8a21853039` |
+| standard | `radar_raman/weights/standard.h5` | `Models/standardModel.h5` | `9eecea6445d2ab0d952f6eba19a10f3a182d3262b60c77228196234dd1b326b7` |
+| ensemble | `radar_raman/weights/ensemble.h5` | `Models/ensembleModelRes.h5` | `69e741d53dee6ab8b8de7cf515c9ea5c6a01534f4ad1f7642a8b7e8a21853039` |
 
 The files are the unmodified Keras 2.7 weight files from the original
 repository, trained by J. Sjöberg. Each model saw
@@ -80,7 +80,7 @@ repository, trained by J. Sjöberg. Each model saw
 learning-rate decay from 1.05e-3 to 1.5e-6. Keras 2 names
 layers automatically (`conv1d_4`, `batch_normalization_7`, …) and loads
 weights by layer order. RADAR names every layer explicitly and loads the old
-files through a fixed name mapping (`radar.models.LEGACY_LAYER_NAMES`),
+files through a fixed name mapping (`radar_raman.models.LEGACY_LAYER_NAMES`),
 checking every weight shape.
 
 ### Validation of the port

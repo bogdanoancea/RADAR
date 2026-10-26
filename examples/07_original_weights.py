@@ -14,13 +14,13 @@ from pathlib import Path
 
 import numpy as np
 
-import radar
-from radar._weights import pretrained_weights_path
+import radar_raman
+from radar_raman._weights import pretrained_weights_path
 
 # Default: the copy bundled with RADAR (identical to Models/ensembleModelRes.h5)
 path = sys.argv[1] if len(sys.argv) > 1 else pretrained_weights_path("ensemble")
 
-model = radar.load_model(path, architecture="ensemble")
+model = radar_raman.load_model(path, architecture="ensemble")
 print("loaded", path, "->", model)
 
 # Convert to the Keras 3 formats
@@ -29,6 +29,6 @@ OUT.mkdir(exist_ok=True)
 model.save(OUT / "ensemble_from_h5.keras")          # complete model
 model.save(OUT / "ensemble_from_h5.weights.h5")     # weights only
 
-x = radar.generate_dataset(2, length=1024, seed=0).X
-same = np.allclose(model.decompose(x).peaks, radar.load_pretrained("ensemble").decompose(x).peaks)
+x = radar_raman.generate_dataset(2, length=1024, seed=0).X
+same = np.allclose(model.decompose(x).peaks, radar_raman.load_pretrained("ensemble").decompose(x).peaks)
 print("same predictions as the bundled pre-trained model:", same)

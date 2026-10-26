@@ -18,9 +18,8 @@ on 240 million synthetic spectra with known components:
 - **`standard`**: a single-stage network with 0.59 M parameters.
 
 ```python
-import radar
-
-comps = radar.decompose("my_spectra.spc")   # or a NumPy array, or any other supported file
+import radar_raman
+comps = radar_raman.decompose("my_spectra.spc")  # or a NumPy array, or any other supported file
 comps.peaks                                 # corrected spectra
 comps.save("my_spectra_components.h5")
 ```

@@ -85,7 +85,7 @@ lists every intentional change.
 
 The following did not exist as reusable code in the original repository:
 
-- the simple API (`radar.decompose`, `read`, `write`, `load_model`, `train`,
+- the simple API (`radar_raman.decompose`, `read`, `write`, `load_model`, `train`,
   `generate`, `evaluate`) and the `Decomposer` class (normalisation, mapping
   back to input units, maps, spectra of different lengths);
 - file I/O for SPC, JCAMP-DX, Renishaw WDF, Horiba LabSpec XML, TriVista TVF,

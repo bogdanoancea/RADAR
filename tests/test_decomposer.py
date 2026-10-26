@@ -4,8 +4,8 @@
 import numpy as np
 import pytest
 
-import radar
-from radar import Components, Decomposer
+import radar_raman
+from radar_raman import Components, Decomposer
 
 
 @pytest.mark.parametrize("arch", ["standard", "ensemble"])
@@ -88,13 +88,13 @@ def test_derived_spectra(pretrained, small_dataset):
 
 
 def test_module_level_decompose(small_dataset):
-    c = radar.decompose(small_dataset.X[:2], model="standard")
+    c = radar_raman.decompose(small_dataset.X[:2], model="standard")
     assert c.model == "standard"
 
 
 def test_evaluate_quality(pretrained):
     """Pre-trained models recover the components of original-style test data."""
-    ds = radar.generate_dataset(64, length=1024, seed=2024)
+    ds = radar_raman.generate_dataset(64, length=1024, seed=2024)
     for arch, dec in pretrained.items():
         res = dec.evaluate(ds)
         assert res["baseline"]["r2"] > 0.85, (arch, res)
@@ -109,7 +109,7 @@ def test_evaluate_quality(pretrained):
 def test_save_load_keras(pretrained, small_dataset, tmp_path, arch):
     m = pretrained[arch]
     p = m.save(tmp_path / "model.keras")
-    m2 = radar.load_model(p)
+    m2 = radar_raman.load_model(p)
     assert m2.architecture == arch
     np.testing.assert_allclose(
         m2.decompose(small_dataset.X[:3]).peaks, m.decompose(small_dataset.X[:3]).peaks, atol=1e-6
@@ -119,17 +119,17 @@ def test_save_load_keras(pretrained, small_dataset, tmp_path, arch):
 def test_save_load_weights(pretrained, small_dataset, tmp_path):
     m = pretrained["ensemble"]
     p = m.save(tmp_path / "model.weights.h5")
-    assert radar.load_model(p).architecture == "ensemble"  # read from the file's record
-    m2 = radar.load_model(p, architecture="ensemble")
+    assert radar_raman.load_model(p).architecture == "ensemble"  # read from the file's record
+    m2 = radar_raman.load_model(p, architecture="ensemble")
     np.testing.assert_allclose(
         m2.decompose(small_dataset.X[:3]).noise, m.decompose(small_dataset.X[:3]).noise, atol=1e-6
     )
 
 
 def test_load_original_h5(tmp_path):
-    from radar._weights import pretrained_weights_path
+    from radar_raman._weights import pretrained_weights_path
 
-    m = radar.load_model(pretrained_weights_path("standard"), architecture="standard")
+    m = radar_raman.load_model(pretrained_weights_path("standard"), architecture="standard")
     assert m.architecture == "standard"
 
 
@@ -137,7 +137,7 @@ def test_save_bad_name(pretrained, tmp_path):
     with pytest.raises(ValueError):
         pretrained["standard"].save(tmp_path / "model.pkl")
     with pytest.raises(FileNotFoundError):
-        radar.load_model(tmp_path / "missing.keras")
+        radar_raman.load_model(tmp_path / "missing.keras")
 
 
 @pytest.mark.slow
@@ -159,13 +159,13 @@ def test_train_synthetic_stream(arch, tmp_path):
 
 @pytest.mark.slow
 def test_train_fixed_dataset_and_finetune():
-    tr, te = radar.train_test_datasets(8, 4, length=128, seed=0)
+    tr, te = radar_raman.train_test_datasets(8, 4, length=128, seed=0)
     dec = Decomposer.pretrained("standard")
     hist = dec.train(tr, epochs=1, batch_size=4, learning_rate=1e-5,
                      validation_data=te, verbose=0)
     assert len(hist.history["loss"]) == 1
     dec2 = Decomposer.new("ensemble")
-    dec2.train((tr.X, {c: getattr(tr, c) for c in radar.COMPONENTS}), epochs=1,
+    dec2.train((tr.X, {c: getattr(tr, c) for c in radar_raman.COMPONENTS}), epochs=1,
                batch_size=4, validation_data=None, verbose=0)
 
 
@@ -182,7 +182,7 @@ def test_keras_file_from_newer_keras_falls_back_to_weights(pretrained, small_dat
 
     monkeypatch.setattr(keras.models, "load_model", fail)
     with pytest.warns(RuntimeWarning, match="newer Keras"):
-        m2 = radar.load_model(p)
+        m2 = radar_raman.load_model(p)
     assert m2.architecture == "ensemble"
     np.testing.assert_allclose(
         m2.decompose(small_dataset.X[:3]).peaks, m.decompose(small_dataset.X[:3]).peaks, atol=1e-6
@@ -194,11 +194,11 @@ def test_training_is_recorded(tmp_path):
     import json
     import zipfile
 
-    dec = radar.load_model("standard")
-    tr, _ = radar.train_test_datasets(8, 2, length=64, seed=0)
+    dec = radar_raman.load_model("standard")
+    tr, _ = radar_raman.train_test_datasets(8, 2, length=64, seed=0)
     dec.train(tr, epochs=1, batch_size=4, learning_rate=1e-6, validation_data=None, verbose=0)
     info = json.loads(zipfile.ZipFile(dec.save(tmp_path / "t.keras")).read("radar_info.json"))
     assert info["training"]["spectra_seen"] == 8
     assert info["training"]["started_from"]["spectra_seen"] == 240_000_000
-    back = radar.load_model(tmp_path / "t.keras")
+    back = radar_raman.load_model(tmp_path / "t.keras")
     assert back.training_info["spectra_seen"] == 8

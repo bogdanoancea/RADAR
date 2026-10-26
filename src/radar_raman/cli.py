@@ -1,25 +1,25 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright (c) 2025 Joel Sjöberg (original implementation)
 # Copyright (c) 2026 Bogdan Oancea (RADAR package)
-"""Command-line interface: ``radar <command> ...``.
+"""Command-line interface: ``radar-raman <command> ...``.
 
 Commands
 --------
-``radar decompose INPUT [INPUT ...] -o OUTPUT [--model ensemble|standard|FILE]``
+``radar-raman decompose INPUT [INPUT ...] -o OUTPUT [--model ensemble|standard|FILE]``
     Decompose spectra from any supported file and save the components
     (format from the output extension). With several inputs, ``-o`` is a
     folder or a pattern containing ``{stem}``.
-``radar convert INPUT OUTPUT``
+``radar-raman convert INPUT OUTPUT``
     Convert spectra (or a decomposition) between file formats.
-``radar generate -n N -o OUTPUT``
+``radar-raman generate -n N -o OUTPUT``
     Write a synthetic data set with ground-truth components.
-``radar train -o MODEL.keras``
+``radar-raman train -o MODEL.keras``
     Train a new model, or fine-tune one with ``--init pretrained|FILE``.
-``radar evaluate DATASET [--model ...] [--statistics]``
+``radar-raman evaluate DATASET [--model ...] [--statistics]``
     RMSE, MAE, max error and R^2 per component on a synthetic data set.
-``radar formats``
+``radar-raman formats``
     List the supported file formats.
-``radar info [MODEL]``
+``radar-raman info [MODEL]``
     Versions and bundled models; with MODEL, the software versions and
     settings the model was saved with.
 """
@@ -147,7 +147,7 @@ def _cmd_info(a):
         model_info(a.model, show=True)
         return
 
-    print(f"radar {__version__}")
+    print(f"radar-raman {__version__}")
     print(f"tensorflow {tf.__version__}, keras {keras.__version__}, numpy {np.__version__}")
     for arch in PRETRAINED_FILES:
         p = pretrained_weights_path(arch)
@@ -171,7 +171,7 @@ def _add_read_options(p):
 
 
 def build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(prog="radar", description="RADAR: deep-learning decomposition of Raman spectra")
+    p = argparse.ArgumentParser(prog="radar-raman", description="RADAR: deep-learning decomposition of Raman spectra")
     sub = p.add_subparsers(dest="command", required=True)
 
     d = sub.add_parser("decompose", help="decompose spectra from files")
@@ -206,7 +206,7 @@ def build_parser() -> argparse.ArgumentParser:
     t.add_argument("-o", "--output", required=True, help="output .keras file")
     t.add_argument("-a", "--architecture", default="ensemble", choices=["ensemble", "standard"])
     t.add_argument("--init", default=None, help="'pretrained' or a model file to fine-tune")
-    t.add_argument("--data", default=None, help="fixed training set (from 'radar generate')")
+    t.add_argument("--data", default=None, help="fixed training set (from 'radar-raman generate')")
     t.add_argument("--epochs", type=int, default=10)
     t.add_argument("--steps", type=int, default=1000, help="steps per epoch (synthetic stream)")
     t.add_argument("--batch-size", type=int, default=100)

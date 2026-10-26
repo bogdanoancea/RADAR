@@ -64,8 +64,8 @@ def load_legacy_weights(model: keras.Model, path, architecture: str) -> keras.Mo
 
     The original files identify layers by automatically generated names
     (``conv1d_4``, ``batch_normalization_7``, ...). This function maps them to
-    the named layers of :func:`radar.models.build_model` using
-    :data:`radar.models.LEGACY_LAYER_NAMES`, and checks that every weight has
+    the named layers of :func:`radar_raman.models.build_model` using
+    :data:`radar_raman.models.LEGACY_LAYER_NAMES`, and checks that every weight has
     the expected shape.
 
     Parameters

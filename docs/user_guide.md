@@ -70,7 +70,7 @@ pip install -e "/path/to/RADAR[dev]"          # everything, editable, for develo
 | `formats` | pandas, pyarrow, openpyxl | `.xlsx`, `.parquet`, `.feather` |
 | `renishaw` | renishawWiRE (MIT) | `.wdf` |
 | `vendor-gpl` | rosettasciio (**GPL-3.0**) | Horiba LabSpec `.xml`, TriVista `.tvf` |
-| `plot` | matplotlib | `Components.plot`, `radar.plotting` |
+| `plot` | matplotlib | `Components.plot`, `radar_raman.plotting` |
 | `test` / `docs` | pytest / mkdocs | running the tests, building these pages |
 
 `rosettasciio` is GPL-licensed. RADAR only imports it at run time when such a
@@ -84,16 +84,15 @@ per second on two cores. Training from scratch needs a GPU. On Linux use
 **Check the installation:**
 
 ```bash
-radar info       # versions, location of the pre-trained weights, optional readers
-radar formats    # supported file formats
+radar-raman info       # versions, location of the pre-trained weights, optional readers
+radar-raman formats    # supported file formats
 ```
 
 ## 3. Quick start
 
 ```python
-import radar
-
-comps = radar.decompose("my_spectra.spc")      # any supported file, or a NumPy array
+import radar_raman
+comps = radar_raman.decompose("my_spectra.spc")  # any supported file, or a NumPy array
 comps.peaks                                    # corrected spectra (same units as the input)
 comps.plot(0)                                  # input and components of spectrum 0
 comps.save("my_spectra_components.h5")         # or .csv, .xlsx, .parquet, .db, ...
@@ -102,7 +101,7 @@ comps.save("my_spectra_components.h5")         # or .csv, .xlsx, .parquet, .db, 
 In one line, with the result saved:
 
 ```python
-radar.decompose("map.wdf", output="map_components.h5")
+radar_raman.decompose("map.wdf", output="map_components.h5")
 ```
 
 ## 4. The API at a glance
@@ -111,16 +110,16 @@ Most tasks need only these eight functions:
 
 | Function | Purpose |
 |---|---|
-| `radar.decompose(spectra, model="ensemble", output=None, **options)` | decompose an array, a `SpectralData` or a file; optionally save the result |
-| `radar.read(path, format=None, **options)` | read spectra from any supported file → `SpectralData` |
-| `radar.write(obj, path, **options)` | write spectra, a decomposition or a data set; format from the extension |
-| `radar.formats(show=False)` | list the supported formats |
-| `radar.load_model(model="ensemble")` | a pre-trained model by name, or a saved model from a file → `Decomposer` |
-| `radar.train(data=None, model="ensemble", init=None, save_to=None, **options)` | train a new network or fine-tune one → `Decomposer` |
-| `radar.generate(n, length=1024, **options)` | synthetic spectra with known components → `SyntheticDataset` |
-| `radar.evaluate(model, dataset, statistics=False)` | RMSE, MAE, max error and R² per component |
+| `radar_raman.decompose(spectra, model="ensemble", output=None, **options)` | decompose an array, a `SpectralData` or a file; optionally save the result |
+| `radar_raman.read(path, format=None, **options)` | read spectra from any supported file → `SpectralData` |
+| `radar_raman.write(obj, path, **options)` | write spectra, a decomposition or a data set; format from the extension |
+| `radar_raman.formats(show=False)` | list the supported formats |
+| `radar_raman.load_model(model="ensemble")` | a pre-trained model by name, or a saved model from a file → `Decomposer` |
+| `radar_raman.train(data=None, model="ensemble", init=None, save_to=None, **options)` | train a new network or fine-tune one → `Decomposer` |
+| `radar_raman.generate(n, length=1024, **options)` | synthetic spectra with known components → `SyntheticDataset` |
+| `radar_raman.evaluate(model, dataset, statistics=False)` | RMSE, MAE, max error and R² per component |
 
-`radar.model_info(path)` tells which software versions and settings a saved
+`radar_raman.model_info(path)` tells which software versions and settings a saved
 model was made with (§9.2).
 
 The four classes behind them:
@@ -132,15 +131,15 @@ The four classes behind them:
 | `Components` | the result of a decomposition |
 | `SyntheticDataset` | synthetic spectra together with their true components |
 
-Everything else (`radar.models`, `radar.generator`, `radar.io`,
-`radar.metrics`, `radar.training`, `radar.plotting`) is available for
+Everything else (`radar_raman.models`, `radar_raman.generator`, `radar_raman.io`,
+`radar_raman.metrics`, `radar_raman.training`, `radar_raman.plotting`) is available for
 finer control; see the [API reference](api.md).
 
 ## 5. Reading spectra
 
 ```python
-data = radar.read("file.ext")      # the format follows the extension
-data = radar.read("file.ext", format="csv", layout="rows")   # or set it explicitly
+data = radar_raman.read("file.ext")  # the format follows the extension
+data = radar_raman.read("file.ext", format="csv", layout="rows")  # or set it explicitly
 ```
 
 ### 5.1 Supported formats
@@ -208,7 +207,7 @@ Other options for text files: `delimiter=`, `decimal=`, `comments="#"`,
 ### 5.4 The `SpectralData` object
 
 ```python
-data = radar.read("map.wdf")
+data = radar_raman.read("map.wdf")
 data.intensities      # (n, length) array, or a list of arrays if lengths differ
 data.wavenumbers      # (length,) axis, or None
 data.x_units          # e.g. "1/cm", "nm", "Raman shift (cm-1)"
@@ -227,7 +226,7 @@ the x/y positions form a complete grid.
 You can also build `SpectralData` from arrays:
 
 ```python
-data = radar.SpectralData.from_arrays(X, wavenumbers=wn, names=names)   # X: (n, L) or (ny, nx, L)
+data = radar_raman.SpectralData.from_arrays(X, wavenumbers=wn, names=names)  # X: (n, L) or (ny, nx, L)
 ```
 
 ### 5.5 Your own arrays
@@ -240,11 +239,11 @@ of different lengths.
 ## 6. Decomposing spectra
 
 ```python
-comps = radar.decompose(spectra)                          # pre-trained ensemble model
-comps = radar.decompose(spectra, model="standard")
-comps = radar.decompose("data.csv", output="result.xlsx") # read, decompose, save
+comps = radar_raman.decompose(spectra)                    # pre-trained ensemble model
+comps = radar_raman.decompose(spectra, model="standard")
+comps = radar_raman.decompose("data.csv", output="result.xlsx") # read, decompose, save
 
-model = radar.load_model("ensemble")                      # keep a model for repeated use
+model = radar_raman.load_model("ensemble")                # keep a model for repeated use
 comps = model.decompose(spectra)
 comps = model(spectra)                                    # same
 ```
@@ -258,7 +257,7 @@ comps = model(spectra)                                    # same
 | `batch_size` | `32` | spectra per network call |
 | `output` | `None` | also save the result to this file |
 | `verbose` | `0` | print progress |
-| other keywords | | passed to `radar.read` when `spectra` is a path (`layout`, `key`, `sheet`, `query`, ...) |
+| other keywords | | passed to `radar_raman.read` when `spectra` is a path (`layout`, `key`, `sheet`, `query`, ...) |
 
 **How intensities are handled.** Each spectrum *x* is scaled to
 `(x − min) / (max − min)`, decomposed, and the components are scaled back. All
@@ -321,18 +320,18 @@ between two axis values. Without a map it returns one value per spectrum.
 
 ```python
 fig = comps.plot(index=0)                        # input + 4 components, 5 panels
-from radar.plotting import plot_comparison
+from radar_raman.plotting import plot_comparison
 fig = plot_comparison(test_set, comps, index=0)  # true vs predicted (synthetic data)
 ```
 
 ## 8. Saving results and converting files
 
 ```python
-comps.save("result.h5")                 # same as radar.write(comps, "result.h5")
-radar.write(comps, "result.xlsx")
-radar.write(data, "spectra.jdx")        # SpectralData
-radar.write(X, "spectra.csv", wavenumbers=wn, names=names)   # plain arrays
-radar.write(test_set, "test.parquet")   # SyntheticDataset
+comps.save("result.h5")           # same as radar_raman.write(comps, "result.h5")
+radar_raman.write(comps, "result.xlsx")
+radar_raman.write(data, "spectra.jdx")  # SpectralData
+radar_raman.write(X, "spectra.csv", wavenumbers=wn, names=names)  # plain arrays
+radar_raman.write(test_set, "test.parquet")  # SyntheticDataset
 ```
 
 How each format stores a decomposition (spectra + 4 components):
@@ -352,27 +351,27 @@ Plain spectra are written in the *wide* layout to text and Excel, and in the
 **Reading results back:**
 
 ```python
-comps = radar.load_components("result.h5")          # any multi-array format
-comps = radar.load_components("result_peaks.spc")   # finds the sibling files
+comps = radar_raman.load_components("result.h5")    # any multi-array format
+comps = radar_raman.load_components("result_peaks.spc")  # finds the sibling files
 ```
 
 **Converting between formats:**
 
 ```python
-radar.write(radar.read("old.spc"), "new.jdx")
+radar_raman.write(radar_raman.read("old.spc"), "new.jdx")
 ```
 
-From the command line: `radar convert old.spc new.jdx`.
+From the command line: `radar-raman convert old.spc new.jdx`.
 
 ## 9. Models
 
 ### 9.1 Loading and saving
 
 ```python
-model = radar.load_model("ensemble")                         # pre-trained
-model = radar.load_model("my_model.keras")                   # saved with model.save
-model = radar.load_model("w.weights.h5", architecture="standard")
-model = radar.load_model("Models/ensembleModelRes.h5", architecture="ensemble")  # original weight files
+model = radar_raman.load_model("ensemble")                   # pre-trained
+model = radar_raman.load_model("my_model.keras")             # saved with model.save
+model = radar_raman.load_model("w.weights.h5", architecture="standard")
+model = radar_raman.load_model("Models/ensembleModelRes.h5", architecture="ensemble")  # original weight files
 model.save("my_model.keras")       # architecture + weights + optimiser state
 model.save("my_model.weights.h5")  # weights + architecture name (no optimiser state)
 model.summary()                    # layer table
@@ -392,7 +391,7 @@ Every model saved by RADAR records how it was made:
 Ask for it without loading the model:
 
 ```python
-radar.model_info("my_model.keras", show=True)
+radar_raman.model_info("my_model.keras", show=True)
 ```
 
 ```
@@ -405,8 +404,8 @@ training     : epochs=12, steps_per_epoch=200000, batch_size=100, spectra_seen=2
 compatibility: loads with the installed versions
 ```
 
-The same is available from the command line (`radar info my_model.keras`),
-and as a dict (`radar.model_info(path)["saved_with"]["tensorflow"]`).
+The same is available from the command line (`radar-raman info my_model.keras`),
+and as a dict (`radar_raman.model_info(path)["saved_with"]["tensorflow"]`).
 
 **Where it is stored.**
 - `.keras` files: an extra `radar_info.json` entry in the archive. A `.keras`
@@ -434,19 +433,19 @@ a model, tell them the versions from `model_info`. Alternatively, share the
 `.weights.h5` file: it holds only weights and is the most portable format.
 
 For full reproducibility of an analysis, also record the environment the
-results were produced with: `radar info` prints the installed versions.
+results were produced with: `radar-raman info` prints the installed versions.
 
 ### 9.3 Architectures
 
 See [Models](models.md) for the layer-by-layer description. Both networks can
 be built with other sizes, for example
-`radar.new_model("ensemble", scaler=16, dim_red_size=196)`, but the
+`radar_raman.new_model("ensemble", scaler=16, dim_red_size=196)`, but the
 pre-trained weights only fit the default sizes.
 
 ## 10. Training a new model
 
 ```python
-model = radar.train(
+model = radar_raman.train(
     model="ensemble",                  # or "standard"
     epochs=12, steps_per_epoch=200_000, batch_size=100,   # 240 M spectra, as the pre-trained models
     length=750, min_width=5, max_width=256, max_num_peaks=5,
@@ -475,7 +474,7 @@ GPU. On a CPU a step of 100 spectra takes about 3–7 s. Use short runs only to
 test a set-up.
 
 The lower-level `Decomposer` methods do the same thing:
-`radar.new_model("ensemble").train(...)`.
+`radar_raman.new_model("ensemble").train(...)`.
 
 ## 11. Fine-tuning a model
 
@@ -484,15 +483,15 @@ components are known. Usually these are synthetic spectra that resemble your
 data (length, band widths, noise level).
 
 ```python
-train, test = radar.train_test_datasets(
+train, test = radar_raman.train_test_datasets(
     5000, 500, length=1340,
     train_kwargs=dict(min_width=8, max_width=300),
     test_kwargs=dict(min_width=8, max_width=300),
 )
-before = radar.evaluate("ensemble", test)
-model = radar.train(train, model="ensemble", init="pretrained", epochs=5, batch_size=32,
+before = radar_raman.evaluate("ensemble", test)
+model = radar_raman.train(train, model="ensemble", init="pretrained", epochs=5, batch_size=32,
                     learning_rate=1e-5, validation_data=test, save_to="tuned.keras")
-after = radar.evaluate(model, test)
+after = radar_raman.evaluate(model, test)
 ```
 
 - Use a **small constant learning rate** such as `1e-5`. The original
@@ -506,14 +505,14 @@ after = radar.evaluate(model, test)
 ## 12. Synthetic data
 
 ```python
-test = radar.generate(1000, length=1024, seed=0)       # test settings (default)
-train = radar.generate(5000, length=750, min_width=5, max_width=256,
+test = radar_raman.generate(1000, length=1024, seed=0)  # test settings (default)
+train = radar_raman.generate(5000, length=750, min_width=5, max_width=256,
                        max_num_peaks=5, increase_noise=False, seed=1)   # training settings
-train, test = radar.train_test_datasets(5000, 1000, length=1024, seed=0) # independent streams
+train, test = radar_raman.train_test_datasets(5000, 1000, length=1024, seed=0) # independent streams
 test.X, test.baseline, test.cosmic_rays, test.noise, test.peaks         # (n, length) each
 X, y = test.as_keras()          # (n, L, 1), [4 × (n, L)] float32
 test.save("test.h5")            # any multi-array format
-test = radar.load_dataset("test.h5")
+test = radar_raman.load_dataset("test.h5")
 ```
 
 **What a synthetic spectrum contains.**
@@ -538,15 +537,15 @@ the input was not. The pre-trained weights were trained that way. RADAR
 scales consistently by default; see [differences](differences.md).
 
 All functions take `seed=` (or `rng=`) and never use NumPy's global random
-state. For training streams, use `radar.batch_generator(...)` (Python
-generator) or `radar.make_tf_dataset(...)` (`tf.data`).
+state. For training streams, use `radar_raman.batch_generator(...)` (Python
+generator) or `radar_raman.make_tf_dataset(...)` (`tf.data`).
 
 ## 13. Evaluating a model
 
 ```python
-res = radar.evaluate(model, test)                    # model: name, file or Decomposer
+res = radar_raman.evaluate(model, test)              # model: name, file or Decomposer
 res["peaks"]   # {'rmse': ..., 'mae': ..., 'max_error': ..., 'r2': ...}
-stats = radar.evaluate(model, test, statistics=True)
+stats = radar_raman.evaluate(model, test, statistics=True)
 stats["noise"] # {'rmse_mean', 'rmse_median', 'rmse_variance',
                #  'max_error_mean', 'max_error_median', 'max_error_variance'}
 ```
@@ -565,7 +564,7 @@ spectrum whose true component is constant (e.g. no cosmic rays).
 `statistics=True` gives the mean, median and variance over spectra of the
 per-spectrum RMSE and max error.
 
-Low-level functions: `radar.metrics.rmse`, `mae`, `max_error`, `r2`
+Low-level functions: `radar_raman.metrics.rmse`, `mae`, `max_error`, `r2`
 (per spectrum), `per_spectrum_errors`, `error_statistics`,
 `evaluate_components` (any two objects or dicts with the four components),
 and `snr`.
@@ -592,20 +591,20 @@ the size of the errors, not as a benchmark for measured spectra.
 
 | Command | Does |
 |---|---|
-| `radar decompose IN [IN ...] -o OUT [-m ensemble\|standard\|FILE]` | decompose files; with several inputs `-o` is a folder or a pattern with `{stem}` |
-| `radar convert IN OUT` | convert spectra or a decomposition between formats |
-| `radar generate -n N -o OUT [--length L] [--train]` | synthetic data set |
-| `radar train -o MODEL.keras [-a ensemble] [--init pretrained\|FILE] [--data FILE]` | train or fine-tune |
-| `radar evaluate DATA [-m MODEL] [--statistics]` | metrics as JSON |
-| `radar formats` / `radar info [MODEL]` | formats / installation, or the versions a model was saved with |
+| `radar-raman decompose IN [IN ...] -o OUT [-m ensemble\|standard\|FILE]` | decompose files; with several inputs `-o` is a folder or a pattern with `{stem}` |
+| `radar-raman convert IN OUT` | convert spectra or a decomposition between formats |
+| `radar-raman generate -n N -o OUT [--length L] [--train]` | synthetic data set |
+| `radar-raman train -o MODEL.keras [-a ensemble] [--init pretrained\|FILE] [--data FILE]` | train or fine-tune |
+| `radar-raman evaluate DATA [-m MODEL] [--statistics]` | metrics as JSON |
+| `radar-raman formats` / `radar-raman info [MODEL]` | formats / installation, or the versions a model was saved with |
 
 ```bash
-radar decompose sample.wdf -o sample_components.h5
-radar decompose data/*.spc -o "results/{stem}_components.csv" -m standard
-radar decompose export.csv -o out.db --layout long --decimal ,
-radar convert measurement.spc measurement.jdx
-radar generate -n 1000 -o test.h5
-radar evaluate test.h5 -m tuned.keras --statistics
+radar-raman decompose sample.wdf -o sample_components.h5
+radar-raman decompose data/*.spc -o "results/{stem}_components.csv" -m standard
+radar-raman decompose export.csv -o out.db --layout long --decimal ,
+radar-raman convert measurement.spc measurement.jdx
+radar-raman generate -n 1000 -o test.h5
+radar-raman evaluate test.h5 -m tuned.keras --statistics
 ```
 
 All read options (`--format`, `--layout`, `--key`, `--sheet`, `--table`,
@@ -639,12 +638,12 @@ All read options (`--format`, `--layout`, `--key`, `--sheet`, `--table`,
 | `ImportError: ... pandas` / `pyarrow` / `openpyxl` | `pip install "radar-raman[formats]"` |
 | `ImportError: ... renishawWiRE` | `pip install renishawWiRE` |
 | `.xml` / `.tvf` files | `pip install rosettasciio` (GPL-3.0) |
-| `cannot tell the format of ...` | pass `format="csv"` (or another name from `radar.formats()`) |
+| `cannot tell the format of ...` | pass `format="csv"` (or another name from `radar_raman.formats()`) |
 | a table is read with the wrong orientation | pass `layout="wide"`, `"rows"` or `"long"` |
 | numbers with decimal commas read as text | `decimal=","` |
 | `UserWarning: ... saved with keras X, installed Y` | install the version shown, or ignore: the weights are still loaded (§9.2) |
 | `RuntimeWarning: ... saved with a newer Keras version` | harmless: the weights were loaded (§9.2) |
-| which versions does a model file need? | `radar.model_info(path, show=True)` or `radar info path` (§9.2) |
+| which versions does a model file need? | `radar_raman.model_info(path, show=True)` or `radar-raman info path` (§9.2) |
 | `ValueError: spectra contain NaN` | clean the data first |
 | out of memory with very large maps | decompose in chunks: `model.decompose(X[i:i+10000])`, or lower `batch_size` |
 | slow training | use a GPU; on CPU, train only short test runs |

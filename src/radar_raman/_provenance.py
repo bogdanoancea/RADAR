@@ -75,7 +75,7 @@ def hyperparameters(model) -> Dict[str, float]:
 
 
 def make_info(decomposer) -> dict:
-    """The provenance record of a :class:`~radar.Decomposer`."""
+    """The provenance record of a :class:`~radar_raman.Decomposer`."""
     info = {
         "radar_info_format": INFO_FORMAT,
         "saved_with": environment(),
@@ -144,7 +144,7 @@ def read_info(path) -> dict:
                 be = be.decode() if isinstance(be, bytes) else str(be)
                 return {"saved_with": {"keras": kv, "keras_backend": be},
                         "note": "Keras 2 weight file (e.g. from the original training scripts); "
-                                "load with radar.load_model(path, architecture=...)"}
+                                "load with radar_raman.load_model(path, architecture=...)"}
     return {}
 
 
@@ -175,7 +175,7 @@ def compatibility(info: dict, installed: Optional[Dict[str, str]] = None) -> Lis
                          f"\"{pkg if pkg != 'radar' else 'radar-raman'}>={s}\"` to load it natively")
         elif pkg == "keras" and _vtuple(s)[0] < 3:
             notes.append(f"saved with Keras {s} (Keras 2): only the weights can be used; "
-                         "load with radar.load_model(path, architecture=...)")
+                         "load with radar_raman.load_model(path, architecture=...)")
     return notes
 
 

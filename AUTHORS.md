@@ -5,7 +5,7 @@
 **Joel Sjöberg** wrote the original implementation on which RADAR is based:
 the two network architectures (standard and ensemble), the synthetic
 spectrum generator, the training scripts and the pre-trained weights shipped
-in `src/radar/weights/`.
+in `src/radar_raman/weights/`.
 
 - Original repository: <https://github.com/JoelSjoberg/Comprehensive-Raman-Spectral-Analysis-Using-Deep-Learning>
 - Pre-trained weights: `Models/standardModel.h5` → `weights/standard.h5` and

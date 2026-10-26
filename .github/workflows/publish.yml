@@ -10,7 +10,7 @@
 #   2. On GitHub: Settings -> Environments -> New environment "pypi"
 #      (optionally add yourself as a required reviewer).
 #
-# To release: set __version__ in src/radar/_version.py, update CHANGELOG.md,
+# To release: set __version__ in src/radar_raman/_version.py, update CHANGELOG.md,
 # push, then create a GitHub release with the tag v<version> (e.g. v0.1.0).
 
 name: Publish to PyPI
@@ -36,10 +36,10 @@ jobs:
       - name: Check that the release tag matches the package version
         run: |
           TAG="${GITHUB_REF_NAME#v}"
-          VERSION=$(python -c "import re; print(re.search(r'__version__\s*=\s*\"([^\"]+)\"', open('src/radar/_version.py').read()).group(1))")
+          VERSION=$(python -c "import re; print(re.search(r'__version__\s*=\s*\"([^\"]+)\"', open('src/radar_raman/_version.py').read()).group(1))")
           echo "tag: $TAG   package version: $VERSION"
           if [ "$TAG" != "$VERSION" ]; then
-            echo "::error::Release tag ($GITHUB_REF_NAME) does not match __version__ ($VERSION) in src/radar/_version.py"
+            echo "::error::Release tag ($GITHUB_REF_NAME) does not match __version__ ($VERSION) in src/radar_raman/_version.py"
             exit 1
           fi
 
@@ -51,7 +51,7 @@ jobs:
 
       - name: Check that the pre-trained weights are in the wheel
         run: |
-          python -m zipfile -l dist/*.whl | grep -E "radar/weights/(standard|ensemble)\.h5"
+          python -m zipfile -l dist/*.whl | grep -E "radar_raman/weights/(standard|ensemble)\.h5"
 
       - uses: actions/upload-artifact@v4
         with:

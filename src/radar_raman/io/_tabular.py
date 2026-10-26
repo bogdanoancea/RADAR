@@ -595,7 +595,7 @@ def write_sqlite(path, cols, meta: dict, table: str = "spectra", if_exists: str 
 
     path = Path(path)
     with tempfile.TemporaryDirectory() as tmp:
-        tmp_db = Path(tmp) / "radar.db"
+        tmp_db = Path(tmp) / "radar_raman.db"
         if if_exists == "append" and path.exists():
             shutil.copyfile(path, tmp_db)
         elif if_exists == "fail" and path.exists():

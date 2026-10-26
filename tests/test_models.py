@@ -4,9 +4,9 @@
 import numpy as np
 import pytest
 
-import radar
-from radar._weights import is_legacy_weight_file, load_legacy_weights, pretrained_weights_path
-from radar.models import COMPONENTS, LEGACY_LAYER_NAMES, build_model
+import radar_raman
+from radar_raman._weights import is_legacy_weight_file, load_legacy_weights, pretrained_weights_path
+from radar_raman.models import COMPONENTS, LEGACY_LAYER_NAMES, build_model
 
 
 @pytest.mark.parametrize("arch,n_params", [("standard", 585_299), ("ensemble", 280_592)])
@@ -73,22 +73,22 @@ def test_saved_models_record_provenance(tmp_path):
 
     import keras
 
-    from radar import _provenance
+    from radar_raman import _provenance
 
-    m = radar.load_model("standard")
+    m = radar_raman.load_model("standard")
     k = m.save(tmp_path / "m.keras")
     w = m.save(tmp_path / "m.weights.h5")
     info = json.loads(zipfile.ZipFile(k).read("radar_info.json"))
     assert info["saved_with"]["keras"] == keras.__version__
-    assert info["saved_with"]["radar"] == radar.__version__
+    assert info["saved_with"]["radar"] == radar_raman.__version__
     assert "tensorflow" in info["saved_with"] and info["architecture"] == "standard"
     assert info["hyperparameters"]["scaler"] == 20
     assert info["training"]["spectra_seen"] == 240_000_000
     # weights-only files need no architecture argument any more
-    m2 = radar.load_model(w)
+    m2 = radar_raman.load_model(w)
     assert m2.architecture == "standard"
-    assert radar.model_info(w)["compatibility"] == []
-    assert radar.model_info(k)["saved_with"]["keras"] == keras.__version__
+    assert radar_raman.model_info(w)["compatibility"] == []
+    assert radar_raman.model_info(k)["saved_with"]["keras"] == keras.__version__
     # a model trained further records its training and where it started from
     m.training_info = None
     assert "training" not in _provenance.make_info(m)
@@ -100,24 +100,24 @@ def test_provenance_flags_newer_software(tmp_path):
     import h5py
     import pytest as _pytest
 
-    m = radar.load_model("standard")
+    m = radar_raman.load_model("standard")
     w = m.save(tmp_path / "m.weights.h5")
     with h5py.File(w, "a") as f:
         info = json.loads(f.attrs["radar_info"])
         info["saved_with"]["keras"] = "9.0.0"
         f.attrs["radar_info"] = json.dumps(info)
-    assert any("keras 9.0.0" in n for n in radar.model_info(w)["compatibility"])
+    assert any("keras 9.0.0" in n for n in radar_raman.model_info(w)["compatibility"])
     with _pytest.warns(UserWarning, match="keras 9.0.0"):
-        radar.load_model(w)
+        radar_raman.load_model(w)
 
 
 def test_provenance_of_foreign_files(tmp_path):
-    from radar._weights import pretrained_weights_path
+    from radar_raman._weights import pretrained_weights_path
 
-    info = radar.model_info(pretrained_weights_path("ensemble"))
+    info = radar_raman.model_info(pretrained_weights_path("ensemble"))
     assert info["saved_with"]["keras"] == "2.7.0"
-    assert radar.model_info("ensemble")["compatibility"] == []
-    plain = radar.build_model("standard")
+    assert radar_raman.model_info("ensemble")["compatibility"] == []
+    plain = radar_raman.build_model("standard")
     plain.save(tmp_path / "plain.keras")        # saved by Keras directly, no RADAR record
-    info = radar.model_info(tmp_path / "plain.keras")
+    info = radar_raman.model_info(tmp_path / "plain.keras")
     assert info["saved_with"]["keras"] and "note" in info

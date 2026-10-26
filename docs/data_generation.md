@@ -1,7 +1,7 @@
 # Synthetic data
 
 The networks are trained on synthetic spectra whose components are known
-exactly. The generator (`radar.generator`) reproduces the original one.
+exactly. The generator (`radar_raman.generator`) reproduces the original one.
 
 ## Components
 
@@ -28,24 +28,23 @@ the `legacy_scaling` option, see [differences](differences.md).
 ## API
 
 ```python
-import radar
-
+import radar_raman
 # finite data sets -> SyntheticDataset(X, baseline, cosmic_rays, noise, peaks, params)
-test = radar.generate_dataset(1000, length=1024, min_width=10, max_width=300,
+test = radar_raman.generate_dataset(1000, length=1024, min_width=10, max_width=300,
                               increase_noise=True, seed=0)     # = original test data
-train, test = radar.train_test_datasets(5000, 1000, length=750, seed=0)
+train, test = radar_raman.train_test_datasets(5000, 1000, length=750, seed=0)
 
 X, y = test.as_keras()          # (n, L, 1), [4 x (n, L)] float32
 test.subset(slice(0, 10))
-test.save("test.h5"); radar.load_dataset("test.h5")   # any multi-array format
+test.save("test.h5"); radar_raman.load_dataset("test.h5")  # any multi-array format
 
 # endless batches for training
-gen = radar.batch_generator(length=750, batch_size=100, seed=0)
-ds  = radar.make_tf_dataset(length=750, batch_size=100, seed=0)   # tf.data version
+gen = radar_raman.batch_generator(length=750, batch_size=100, seed=0)
+ds  = radar_raman.make_tf_dataset(length=750, batch_size=100, seed=0)  # tf.data version
 
 # single spectra / components
-s, targets = radar.generate_sample(1024, rng=0)
-from radar import generator
+s, targets = radar_raman.generate_sample(1024, rng=0)
+from radar_raman import generator
 generator.generate_baseline(1024, rng=0)
 generator.generate_peaks(1024, max_num_peaks=6, min_peak_width=10, max_peak_width=120, rng=0)
 generator.generate_cosmic_rays(1024, max_num=10, rng=0)
@@ -59,7 +58,7 @@ random state, so the same seed always gives the same data.
 
 **Defaults.**
 
-- `generate_dataset` (alias `radar.generate`) uses the original test settings: widths 10–300, increased
+- `generate_dataset` (alias `radar_raman.generate`) uses the original test settings: widths 10–300, increased
   noise.
 - `batch_generator` and `Decomposer.train` use the training settings: length
   750, widths 5–256, `max_num_peaks=5`, normal noise.

@@ -6,22 +6,22 @@
 Run:  python examples/03_generate_data.py
 
 Command-line equivalent:
-    radar generate -n 1000 --length 1024 -o test_set.npz          # test settings
-    radar generate -n 1000 --length 750 --train -o train_set.npz  # training settings
+    radar-raman generate -n 1000 --length 1024 -o test_set.npz          # test settings
+    radar-raman generate -n 1000 --length 750 --train -o train_set.npz  # training settings
 """
 from pathlib import Path
 
 import numpy as np
 
-import radar
-from radar import generator
+import radar_raman
+from radar_raman import generator
 
 OUT = Path(__file__).parent / "output"
 OUT.mkdir(exist_ok=True)
 
 # --- Original test set (GenerateTestData.ipynb): length 1024, peak
 #     widths 10-300 points, increased noise, spectra min-max normalised.
-test = radar.generate_dataset(200, length=1024, min_width=10, max_width=300,
+test = radar_raman.generate_dataset(200, length=1024, min_width=10, max_width=300,
                               increase_noise=True, seed=0)
 print("test set:", test.X.shape, "params:", test.params)
 print("input == sum of components:",
@@ -29,7 +29,7 @@ print("input == sum of components:",
 test.save(OUT / "test_set.npz")
 
 # --- Independent train/test sets with the original settings
-train, test2 = radar.train_test_datasets(n_train=500, n_test=100, length=750, seed=1)
+train, test2 = radar_raman.train_test_datasets(n_train=500, n_test=100, length=750, seed=1)
 print("train:", train.X.shape, "test:", test2.X.shape)
 
 # --- Arrays for Keras: X has shape (n, length, 1), y = [baseline, cosmic_rays, noise, peaks]
@@ -37,7 +37,7 @@ X, y = train.as_keras()
 print("keras arrays:", X.shape, [t.shape for t in y])
 
 # --- Infinite stream of training batches (used by Decomposer.train)
-batches = radar.batch_generator(length=750, batch_size=100, seed=2)
+batches = radar_raman.batch_generator(length=750, batch_size=100, seed=2)
 Xb, yb = next(batches)
 print("one batch:", Xb.shape, [t.shape for t in yb])
 

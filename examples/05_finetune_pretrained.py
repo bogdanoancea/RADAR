@@ -15,19 +15,18 @@ for a real fine-tuning use thousands of spectra and several epochs (GPU).
 """
 from pathlib import Path
 
-import radar
-
+import radar_raman
 OUT = Path(__file__).parent / "output"
 OUT.mkdir(exist_ok=True)
 
 # Data resembling the target instrument: broader bands
-train, test = radar.train_test_datasets(
+train, test = radar_raman.train_test_datasets(
     n_train=160, n_test=64, length=1024, seed=0,
     train_kwargs=dict(min_width=20, max_width=400),
     test_kwargs=dict(min_width=20, max_width=400),
 )
 
-model = radar.load_pretrained("ensemble")
+model = radar_raman.load_pretrained("ensemble")
 before = model.evaluate(test)
 
 # Use a small constant learning rate for fine-tuning (the original schedule
@@ -36,7 +35,7 @@ model.train(train, epochs=1, batch_size=16, learning_rate=1e-5,
             validation_data=test, verbose=2)
 after = model.evaluate(test)
 
-for comp in radar.COMPONENTS:
+for comp in radar_raman.COMPONENTS:
     print(f"{comp:12s} R2 before {before[comp]['r2']:.3f}  after {after[comp]['r2']:.3f}")
 
 # NOTE: with this toy amount of data the scores can go slightly DOWN (batch-

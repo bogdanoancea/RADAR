@@ -148,7 +148,7 @@ class Components:
         return d
 
     def to_record(self):
-        """Format-independent representation used by :mod:`radar.io`."""
+        """Format-independent representation used by :mod:`radar_raman.io`."""
         from .io import Record
 
         arrays = {k: np.atleast_2d(getattr(self, k)) for k in ("spectra",) + COMPONENTS}
@@ -193,13 +193,13 @@ class Components:
         return self.n_spectra
 
     def save(self, path, **options):
-        """Save in any format supported by :func:`radar.write` (chosen by extension)."""
+        """Save in any format supported by :func:`radar_raman.write` (chosen by extension)."""
         from .io import write
 
         return write(self, path, **options)
 
     def plot(self, index: int = 0, **kwargs):
-        """Plot the decomposition of one spectrum (see :func:`radar.plotting.plot_components`)."""
+        """Plot the decomposition of one spectrum (see :func:`radar_raman.plotting.plot_components`)."""
         from .plotting import plot_components
 
         return plot_components(self, index=index, **kwargs)

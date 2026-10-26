@@ -36,14 +36,13 @@ pip install -e ".[dev]"       # everything, for development
 ```
 
 Requires Python ≥ 3.9 and TensorFlow ≥ 2.16 (Keras 3). Check the installation
-with `radar info`.
+with `radar-raman info`.
 
 ## Quick start
 
 ```python
-import radar
-
-comps = radar.decompose("spectra.spc")         # file (any supported format) or NumPy array
+import radar_raman
+comps = radar_raman.decompose("spectra.spc")   # file (any supported format) or NumPy array
 comps.baseline, comps.cosmic_rays, comps.noise, comps.peaks
 comps.plot(0)
 comps.save("spectra_components.h5")            # .csv .xlsx .parquet .db .mat .json .spc .jdx ...
@@ -52,18 +51,18 @@ comps.save("spectra_components.h5")            # .csv .xlsx .parquet .db .mat .j
 ## The API in eight functions
 
 ```python
-radar.decompose(spectra, model="ensemble", output=None)  # array / file -> Components
-radar.read(path)                                         # any format -> SpectralData
-radar.write(obj, path)                                   # spectra, components or data sets
-radar.formats(show=True)                                 # supported formats
-radar.load_model("ensemble")                             # pre-trained or saved model
-radar.train(data=None, model="ensemble", init=None, save_to="my.keras", epochs=..., ...)
-radar.generate(1000)                                     # synthetic spectra with ground truth
-radar.evaluate(model, test_set)                          # RMSE, MAE, max error, R²
+radar_raman.decompose(spectra, model="ensemble", output=None)  # array / file -> Components
+radar_raman.read(path)                                   # any format -> SpectralData
+radar_raman.write(obj, path)                             # spectra, components or data sets
+radar_raman.formats(show=True)                           # supported formats
+radar_raman.load_model("ensemble")                       # pre-trained or saved model
+radar_raman.train(data=None, model="ensemble", init=None, save_to="my.keras", epochs=..., ...)
+radar_raman.generate(1000)                               # synthetic spectra with ground truth
+radar_raman.evaluate(model, test_set)                    # RMSE, MAE, max error, R²
 ```
 
 Saved models record the RADAR, Keras and TensorFlow versions they were made
-with: `radar.model_info("my.keras", show=True)` or `radar info my.keras`.
+with: `radar_raman.model_info("my.keras", show=True)` or `radar-raman info my.keras`.
 
 ## Supported file formats
 
@@ -78,13 +77,13 @@ shape (`comps.as_map("peaks")`, `comps.band_image(990, 1010)`).
 ## Command line
 
 ```bash
-radar decompose sample.wdf -o sample_components.h5
-radar decompose data/*.spc -o "results/{stem}.csv" -m standard
-radar convert measurement.spc measurement.jdx
-radar generate -n 1000 -o test.h5
-radar train -o my_model.keras --epochs 12 --steps 200000
-radar evaluate test.h5 -m my_model.keras --statistics
-radar formats
+radar-raman decompose sample.wdf -o sample_components.h5
+radar-raman decompose data/*.spc -o "results/{stem}.csv" -m standard
+radar-raman convert measurement.spc measurement.jdx
+radar-raman generate -n 1000 -o test.h5
+radar-raman train -o my_model.keras --epochs 12 --steps 200000
+radar-raman evaluate test.h5 -m my_model.keras --statistics
+radar-raman formats
 ```
 
 ## Documentation

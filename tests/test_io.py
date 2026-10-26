@@ -7,8 +7,8 @@ import h5py
 import numpy as np
 import pytest
 
-import radar
-from radar.io import load_components, read_spectra, save_components, save_spectra
+import radar_raman
+from radar_raman.io import load_components, read_spectra, save_components, save_spectra
 
 
 @pytest.fixture
@@ -125,15 +125,15 @@ def test_components_csv(tmp_path, pretrained, spectra):
     assert table.dtype.names == ("spectrum", "wavenumber", "spectra", "baseline", "cosmic_rays",
                                  "noise", "peaks")
     np.testing.assert_allclose(table["peaks"][table["spectrum"] == 2], many.peaks[1])
-    back = radar.load_components(p)
+    back = radar_raman.load_components(p)
     np.testing.assert_allclose(back.peaks, many.peaks)
 
 
 def test_dataset_roundtrip(tmp_path):
-    ds = radar.generate_dataset(5, length=100, seed=0)
+    ds = radar_raman.generate_dataset(5, length=100, seed=0)
     p = ds.save(tmp_path / "ds")
     assert p.suffix == ".npz"
-    ds2 = radar.SyntheticDataset.load(p)
+    ds2 = radar_raman.SyntheticDataset.load(p)
     np.testing.assert_array_equal(ds.X, ds2.X)
     np.testing.assert_array_equal(ds.peaks, ds2.peaks)
     assert ds2.params["length"] == 100
