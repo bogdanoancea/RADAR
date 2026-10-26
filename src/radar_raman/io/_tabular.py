@@ -27,7 +27,9 @@ Insight ``>>>>>Begin Spectral Data<<<<<``, RRUFF ``##`` headers, LabSpec
 from __future__ import annotations
 
 import csv
+import importlib.util
 import re
+import sys
 from collections import OrderedDict
 from pathlib import Path
 from typing import Dict, List, Optional, Sequence, Tuple
@@ -449,11 +451,26 @@ def write_text_table(path, cols: "OrderedDict[str, np.ndarray]", delimiter=",", 
 # ---------------------------------------------------------------------------
 # pandas-based formats (Excel, Parquet, Feather)
 # ---------------------------------------------------------------------------
+def _missing(package, error):
+    """Message for an optional package that is missing or fails to import."""
+    if importlib.util.find_spec(package) is None:
+        return f"This format needs {package}: pip install 'radar-raman[formats]'"
+    return (f"{package} is installed but cannot be imported ({error}). "
+            f"Reinstall it in this Python: {sys.executable} -m pip install --force-reinstall {package}")
+
+
+def _pyarrow():
+    try:
+        import pyarrow  # noqa: F401
+    except ImportError as e:
+        raise ImportError(_missing("pyarrow", e)) from e
+
+
 def _pandas():
     try:
         import pandas as pd
     except ImportError as e:  # pragma: no cover
-        raise ImportError("This format needs pandas: pip install 'radar-raman[formats]'") from e
+        raise ImportError(_missing("pandas", e)) from e
     return pd
 
 
@@ -493,6 +510,7 @@ def write_excel(path, sheets: Dict[str, "OrderedDict[str, np.ndarray]"], meta: d
 
 def read_parquet_table(path):
     pd = _pandas()
+    _pyarrow()
     df = pd.read_parquet(path)
     return list(map(str, df.columns)), _df_to_columns(df), _parquet_meta(path)
 
@@ -524,18 +542,20 @@ def write_parquet(path, cols, meta: dict):
         md[b"radar"] = json.dumps(meta, default=str).encode()
         pq.write_table(table.replace_schema_metadata(md), path)
     except ImportError as e:  # pragma: no cover
-        raise ImportError("Parquet needs pyarrow: pip install 'radar-raman[formats]'") from e
+        raise ImportError(_missing("pyarrow", e)) from e
     return Path(path)
 
 
 def read_feather_table(path):
     pd = _pandas()
+    _pyarrow()
     df = pd.read_feather(path)
     return list(map(str, df.columns)), _df_to_columns(df)
 
 
 def write_feather(path, cols):
     pd = _pandas()
+    _pyarrow()
     pd.DataFrame(cols).to_feather(path)
     return Path(path)
 

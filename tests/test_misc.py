@@ -111,8 +111,8 @@ def test_simple_api(tmp_path):
     assert set(res["peaks"]) == {"rmse", "mae", "max_error", "r2"}
     stats = radar_raman.evaluate(m, test.save(tmp_path / "t.h5"), statistics=True)
     assert "max_error_median" in stats["noise"]
-    c = radar_raman.decompose(test.X, model=m, output=tmp_path / "c.parquet")
-    np.testing.assert_allclose(radar_raman.load_components(tmp_path / "c.parquet").peaks, c.peaks)
+    c = radar_raman.decompose(test.X, model=m, output=tmp_path / "c.db")
+    np.testing.assert_allclose(radar_raman.load_components(tmp_path / "c.db").peaks, c.peaks)
 
 
 @pytest.mark.slow

@@ -22,8 +22,16 @@ import pytest
 import radar_raman
 from radar_raman.io import Record
 
-HAS = {m: importlib.util.find_spec(m) is not None
-       for m in ("pandas", "pyarrow", "openpyxl", "renishawWiRE", "rsciio")}
+def _works(module):
+    """True if the module is installed AND imports (a broken install counts as missing)."""
+    try:
+        importlib.import_module(module)
+        return True
+    except Exception:
+        return False
+
+
+HAS = {m: _works(m) for m in ("pandas", "pyarrow", "openpyxl", "renishawWiRE", "rsciio")}
 SAMPLES = os.environ.get("RADAR_SAMPLE_DATA")
 
 
