@@ -1,0 +1,47 @@
+{
+  "upload_type": "software",
+  "title": "RADAR: Raman spectral Analysis using Deep learning for Artifact Removal (Python package)",
+  "description": "<p>RADAR is a Python package that splits Raman spectra into four additive components &mdash; baseline, cosmic rays, noise and peaks &mdash; with convolutional neural networks.</p><ul><li>Two pre-trained networks (standard and ensemble), each trained on 240 million synthetic spectra.</li><li>A synthetic data generator, training and fine-tuning routines, and evaluation metrics (RMSE, MAE, max error, R&sup2;).</li><li>File input/output for the common Raman formats: SPC, JCAMP-DX, Renishaw WDF, Horiba LabSpec, TriVista, instrument text exports, Excel, Parquet, SQLite, HDF5, MATLAB, JSON and NumPy.</li><li>A command-line tool, tests, examples and a user guide.</li></ul><p>The networks, the synthetic data generator and the pre-trained weights come from the original implementation by Joel Sj&ouml;berg. Install with <code>pip install radar-raman</code>.</p>",
+  "creators": [
+    {
+      "name": "Sjöberg, Joel",
+      "orcid": "0000-0002-8572-0431"
+    },
+    {
+      "name": "Oancea, Bogdan",
+      "affiliation": "University of Bucharest",
+      "orcid": "0000-0001-6987-5137"
+    }
+  ],
+  "license": "BSD-3-Clause",
+  "access_right": "open",
+  "keywords": [
+    "Raman spectroscopy",
+    "deep learning",
+    "convolutional neural network",
+    "baseline correction",
+    "cosmic ray removal",
+    "denoising",
+    "Python"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/JoelSjoberg/Comprehensive-Raman-Spectral-Analysis-Using-Deep-Learning",
+      "relation": "isDerivedFrom",
+      "resource_type": "software",
+      "scheme": "url"
+    },
+    {
+      "identifier": "10.1002/adom.202500736",
+      "relation": "isSupplementTo",
+      "resource_type": "publication-article",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "https://pypi.org/project/radar-raman/",
+      "relation": "isIdenticalTo",
+      "resource_type": "software",
+      "scheme": "url"
+    }
+  ]
+}
