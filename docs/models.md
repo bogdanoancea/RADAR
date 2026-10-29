@@ -86,9 +86,18 @@ checking every weight shape.
 ### Validation of the port
 
 The original code (`Scripts/essentials.py`) was run under legacy Keras 2
-(`tf-keras`) with the original weight files on two inputs: six synthetic test
-spectra of length 1024, and three spectra of length 1738. Its outputs are
-stored in `tests/data/reference_outputs.npz`. The RADAR implementation
-reproduces all four outputs of both models to a maximum absolute difference
-of about 1e-6 (float32 rounding). The test `tests/test_models.py::test_matches_original_implementation`
-checks this with a tolerance of 1e-5.
+(`tf-keras`) with the original weight files on synthetic spectra from the
+original generator: six of length 1024 and four of length 1738. Every one of
+the four outputs carries signal on these inputs (maximum values 0.18–0.97),
+so each of the 16 comparisons (2 models × 2 lengths × 4 outputs) is a real
+test. The outputs are stored in `tests/data/reference_outputs.npz`. RADAR
+reproduces all of them to a maximum absolute difference of 5.2e-6 (float32
+rounding); `tests/test_models.py::test_matches_original_implementation`
+checks this with a tolerance of 1e-5 and fails if a reference output is
+close to zero.
+
+A third input, three smooth curves of length 1738 without bands or spikes,
+checks behaviour on featureless data. There the original outputs exactly
+zero cosmic rays (both models) and zero peaks (ensemble model), and so does
+RADAR; these zero-versus-zero matches are reported separately because they
+do not test the computation itself.

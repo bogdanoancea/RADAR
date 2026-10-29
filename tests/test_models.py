@@ -46,13 +46,40 @@ def test_bundled_weights_exist(arch):
     assert p.exists() and is_legacy_weight_file(p)
 
 
+# A reference output must reach this magnitude to count as evidence: comparing
+# an all-zero output with an all-zero reference would pass for a broken port.
+MIN_SIGNAL = 0.1
+TOLERANCE = 1e-5
+
+
 @pytest.mark.parametrize("arch", ["standard", "ensemble"])
 @pytest.mark.parametrize("key", ["X1024", "X1738"])
 def test_matches_original_implementation(pretrained, reference, arch, key):
-    """The Keras 3 port + bundled weights reproduce the original code's outputs."""
+    """The Keras 3 port + bundled weights reproduce the original code's outputs.
+
+    The inputs are synthetic spectra with bands, cosmic rays, noise and
+    baseline, so every one of the four outputs carries signal.
+    """
     out = pretrained[arch].predict_normalized(reference[key])
     for c in COMPONENTS:
-        np.testing.assert_allclose(out[c], reference[f"{arch}_{key}_{c}"], atol=1e-5, rtol=0)
+        ref = reference[f"{arch}_{key}_{c}"]
+        assert np.abs(ref).max() >= MIN_SIGNAL, f"degenerate reference {arch}/{key}/{c}"
+        np.testing.assert_allclose(out[c], ref, atol=TOLERANCE, rtol=0)
+
+
+@pytest.mark.parametrize("arch", ["standard", "ensemble"])
+def test_featureless_input_matches_original(pretrained, reference, arch):
+    """Smooth random walks without bands or spikes (``W1738``).
+
+    The original gives zero cosmic rays (both models) and zero peaks
+    (ensemble) here, so those comparisons only check that the port also
+    outputs zero; they say nothing about its arithmetic, which the test above
+    covers. Baseline and noise still carry signal and are compared exactly.
+    """
+    out = pretrained[arch].predict_normalized(reference["W1738"])
+    for c in COMPONENTS:
+        np.testing.assert_allclose(out[c], reference[f"{arch}_W1738_{c}"], atol=TOLERANCE, rtol=0)
+    assert np.abs(reference[f"{arch}_W1738_cosmic_rays"]).max() == 0
 
 
 def test_legacy_loader_rejects_wrong_architecture():
