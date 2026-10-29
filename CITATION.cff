@@ -15,7 +15,7 @@ authors:
     orcid: "https://orcid.org/0000-0002-8572-0431"
   - family-names: Oancea
     given-names: Bogdan
-    affiliation: University of Bucharest
+    affiliation: "University of Bucharest, Bucharest, Romania; National Institute of Research and Development for Biological Sciences, Bucharest, Romania"
     orcid: "https://orcid.org/0000-0001-6987-5137"
 repository-code: "https://github.com/bogdanoancea/RADAR"
 url: "https://pypi.org/project/radar-raman/"
