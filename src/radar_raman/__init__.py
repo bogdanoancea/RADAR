@@ -79,20 +79,34 @@ from .metrics import error_statistics, evaluate_components
 #: Synthetic spectra with known components (alias of :func:`generate_dataset`).
 generate = generate_dataset
 
-CITATION = (
+#: DOI of this software release (Zenodo).
+__doi__ = "10.5281/zenodo.23760379"
+
+#: Reference for the software.
+SOFTWARE_CITATION = (
+    "J. Sjöberg, B. Oancea, RADAR: Raman spectral Analysis using Deep learning "
+    f"for Artifact Removal (Python package), version {__version__}, Zenodo (2026). "
+    "https://doi.org/10.5281/zenodo.23760379"
+)
+
+#: Reference for the method.
+METHOD_CITATION = (
     "J. Sjöberg, N. Siminea, A. Păun, A. Lita, M. Larion, I. Petre, "
     '"RADAR: Raman Spectral Analysis Using Deep Learning for Artifact Removal", '
     "Advanced Optical Materials (2025) 2500736. https://doi.org/10.1002/adom.202500736"
 )
 
+CITATION = SOFTWARE_CITATION + "\n" + METHOD_CITATION
+
 
 def citation() -> str:
-    """Return the reference to cite when using RADAR."""
+    """Return the references to cite when using RADAR: the software and the method."""
     return CITATION
 
 
 __all__ = [
     "__version__",
+    "__doi__",
     # the simple API
     "decompose",
     "read",

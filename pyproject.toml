@@ -48,6 +48,7 @@ dev = ["radar-raman[plot,formats,renishaw,test,docs]"]
 radar-raman = "radar_raman.cli:main"
 
 [project.urls]
+DOI = "https://doi.org/10.5281/zenodo.23760379"
 Homepage = "https://github.com/bogdanoancea/RADAR"
 Documentation = "https://github.com/bogdanoancea/RADAR/blob/main/docs/user_guide.md"
 Issues = "https://github.com/bogdanoancea/RADAR/issues"

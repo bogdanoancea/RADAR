@@ -43,6 +43,8 @@ def test_schedule_matches_original():
 
 def test_citation():
     assert "10.1002/adom.202500736" in radar_raman.citation()
+    assert radar_raman.__doi__ == "10.5281/zenodo.23760379"
+    assert radar_raman.__doi__ in radar_raman.citation()
 
 
 def test_plotting(pretrained, small_dataset):

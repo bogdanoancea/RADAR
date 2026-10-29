@@ -1,5 +1,7 @@
 # RADAR
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23760379.svg)](https://doi.org/10.5281/zenodo.23760379)
+
 **R**aman spectral **A**nalysis using **D**eep learning for **A**rtifact **R**emoval.
 
 RADAR splits Raman spectra into four additive components with convolutional
@@ -125,6 +127,18 @@ implementation (to within 1e-5), and that every writable format round-trips.
 Optional tests on real instrument files run when `RADAR_SAMPLE_DATA` points to
 the public test data of the SPC, JCAMP-DX and rosettasciio projects (see
 `tests/test_formats.py`).
+
+## How to cite
+
+If you use RADAR, please cite the software:
+
+> Sjöberg, J., & Oancea, B. (2026). *RADAR: Raman spectral Analysis using Deep
+> learning for Artifact Removal (Python package)* (Version 0.1.0) [Computer
+> software]. Zenodo. <https://doi.org/10.5281/zenodo.23760379>
+
+`radar_raman.citation()` prints the references, and
+[CITATION.cff](CITATION.cff) has them in machine-readable form (GitHub's
+"Cite this repository" button uses it).
 
 ## Licence and credits
 

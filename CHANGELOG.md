@@ -1,6 +1,8 @@
 # Changelog
 
-## 0.1.0 (2026-10-24)
+## 0.1.0 (2026-10-29)
+
+Archived on Zenodo: [doi:10.5281/zenodo.23760379](https://doi.org/10.5281/zenodo.23760379).
 
 First release as a Python package, based on the original implementation by
 J. Sjöberg.

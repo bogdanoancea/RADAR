@@ -36,6 +36,17 @@ comps.save("my_spectra_components.h5")
 - [Differences from the original code](differences.md)
 - [Changelog](changelog.md)
 
+## How to cite
+
+If you use RADAR, please cite the software:
+
+> Sjöberg, J., & Oancea, B. (2026). *RADAR: Raman spectral Analysis using Deep
+> learning for Artifact Removal (Python package)* (Version 0.1.0) [Computer
+> software]. Zenodo. <https://doi.org/10.5281/zenodo.23760379>
+
+`radar_raman.citation()` prints the references, and
+`CITATION.cff` in the repository has them in machine-readable form.
+
 ## Credits
 
 The networks, the data generator and the pre-trained weights come from the
