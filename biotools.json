@@ -1,0 +1,225 @@
+{
+  "biotoolsID": "radar-raman",
+  "name": "RADAR-Raman",
+  "description": "Python package that decomposes Raman spectra into baseline, cosmic rays, noise and peaks with convolutional neural networks. It includes two pre-trained models (standard and ensemble), a synthetic data generator, training and fine-tuning tools, evaluation metrics, a command-line tool, and readers and writers for the common Raman file formats (SPC, JCAMP-DX, Renishaw WDF, Horiba LabSpec, TriVista, instrument text exports, Excel, Parquet, SQLite, HDF5, MATLAB, JSON, NumPy).",
+  "homepage": "https://github.com/bogdanoancea/RADAR",
+  "version": [
+    "0.1.0"
+  ],
+  "function": [
+    {
+      "operation": [
+        {
+          "uri": "http://edamontology.org/operation_3214"
+        },
+        {
+          "uri": "http://edamontology.org/operation_3435"
+        },
+        {
+          "uri": "http://edamontology.org/operation_0335"
+        }
+      ],
+      "input": [
+        {
+          "data": {
+            "uri": "http://edamontology.org/data_3483"
+          },
+          "format": [
+            {
+              "uri": "http://edamontology.org/format_3859"
+            },
+            {
+              "uri": "http://edamontology.org/format_3752"
+            },
+            {
+              "uri": "http://edamontology.org/format_3475"
+            },
+            {
+              "uri": "http://edamontology.org/format_2330"
+            },
+            {
+              "uri": "http://edamontology.org/format_3590"
+            },
+            {
+              "uri": "http://edamontology.org/format_3626"
+            },
+            {
+              "uri": "http://edamontology.org/format_3464"
+            },
+            {
+              "uri": "http://edamontology.org/format_3620"
+            },
+            {
+              "uri": "http://edamontology.org/format_3621"
+            },
+            {
+              "uri": "http://edamontology.org/format_3650"
+            },
+            {
+              "uri": "http://edamontology.org/format_4003"
+            }
+          ]
+        }
+      ],
+      "output": [
+        {
+          "data": {
+            "uri": "http://edamontology.org/data_3483"
+          },
+          "format": [
+            {
+              "uri": "http://edamontology.org/format_3859"
+            },
+            {
+              "uri": "http://edamontology.org/format_3752"
+            },
+            {
+              "uri": "http://edamontology.org/format_3475"
+            },
+            {
+              "uri": "http://edamontology.org/format_2330"
+            },
+            {
+              "uri": "http://edamontology.org/format_3590"
+            },
+            {
+              "uri": "http://edamontology.org/format_3626"
+            },
+            {
+              "uri": "http://edamontology.org/format_3464"
+            },
+            {
+              "uri": "http://edamontology.org/format_3620"
+            },
+            {
+              "uri": "http://edamontology.org/format_3621"
+            },
+            {
+              "uri": "http://edamontology.org/format_3650"
+            },
+            {
+              "uri": "http://edamontology.org/format_4003"
+            }
+          ]
+        }
+      ],
+      "note": "Splits each spectrum into baseline, cosmic rays, noise and peaks; the peaks are the corrected, denoised spectrum."
+    }
+  ],
+  "toolType": [
+    "Library",
+    "Command-line tool"
+  ],
+  "topic": [
+    {
+      "uri": "http://edamontology.org/topic_3370"
+    },
+    {
+      "uri": "http://edamontology.org/topic_3474"
+    },
+    {
+      "uri": "http://edamontology.org/topic_3306"
+    },
+    {
+      "uri": "http://edamontology.org/topic_3572"
+    }
+  ],
+  "operatingSystem": [
+    "Linux",
+    "Mac",
+    "Windows"
+  ],
+  "language": [
+    "Python"
+  ],
+  "license": "BSD-3-Clause",
+  "maturity": "Emerging",
+  "cost": "Free of charge",
+  "accessibility": "Open access",
+  "link": [
+    {
+      "url": "https://github.com/bogdanoancea/RADAR",
+      "type": [
+        "Repository"
+      ]
+    },
+    {
+      "url": "https://github.com/bogdanoancea/RADAR/issues",
+      "type": [
+        "Issue tracker"
+      ]
+    }
+  ],
+  "download": [
+    {
+      "url": "https://pypi.org/project/radar-raman/",
+      "type": "Software package",
+      "version": "0.1.0"
+    },
+    {
+      "url": "https://doi.org/10.5281/zenodo.23760379",
+      "type": "Source code",
+      "version": "0.1.0"
+    }
+  ],
+  "documentation": [
+    {
+      "url": "https://github.com/bogdanoancea/RADAR/blob/main/docs/user_guide.md",
+      "type": [
+        "User manual"
+      ]
+    },
+    {
+      "url": "https://github.com/bogdanoancea/RADAR/blob/main/docs/cli.md",
+      "type": [
+        "Command-line options"
+      ]
+    }
+  ],
+  "publication": [
+    {
+      "doi": "10.1002/adom.202500736",
+      "type": [
+        "Primary"
+      ]
+    }
+  ],
+  "credit": [
+    {
+      "name": "Bogdan Oancea",
+      "orcidid": "https://orcid.org/0000-0001-6987-5137",
+      "typeEntity": "Person",
+      "typeRole": [
+        "Developer",
+        "Maintainer",
+        "Primary contact"
+      ]
+    },
+    {
+      "name": "Joel Sjöberg",
+      "orcidid": "https://orcid.org/0000-0002-8572-0431",
+      "typeEntity": "Person",
+      "typeRole": [
+        "Developer"
+      ]
+    },
+    {
+      "name": "University of Bucharest",
+      "typeEntity": "Institute",
+      "typeRole": [
+        "Provider"
+      ]
+    },
+    {
+      "name": "National Institute of Research and Development for Biological Sciences",
+      "url": "https://www.incdsb.ro/en/",
+      "typeEntity": "Institute",
+      "typeRole": [
+        "Provider"
+      ]
+    }
+  ],
+  "editPermission": {
+    "type": "private"
+  }
+}
